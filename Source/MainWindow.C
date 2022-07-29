@@ -57,8 +57,6 @@ void MainWindow::generateNodeEditor() {
 }
 void MainWindow::generateRootDirectoryWidget() {
   root_directory_widget_ = new widgets::PathInput;
-  connect(root_directory_widget_, &widgets::PathInput::pathChanged, this,
-          &MainWindow::onRootDirectoryChanged);
   layout()->addWidget(root_directory_widget_);
 }
 void MainWindow::generateGenerateButtonWidget() {
@@ -69,9 +67,6 @@ void MainWindow::generateGenerateButtonWidget() {
   layout()->addWidget(generate_button_widget_);
 }
 
-void MainWindow::onRootDirectoryChanged(QString const& root_directory) {
-  Q_UNUSED(root_directory)
-}
 void MainWindow::onGenerateButtonClicked() {
   assert(sender() != nullptr);
   assert(node_editor_widget_ != nullptr);

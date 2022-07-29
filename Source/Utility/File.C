@@ -35,6 +35,7 @@ bool File::isEmpty() const { return file_name_.isEmpty(); }
 void File::write(QString const& content) {
   QFileInfo const file_info(file_name_);
   QDir parent_directory = file_info.dir();
+
   if (!parent_directory.exists()) {
     bool const creating_parent_dir_result =
         parent_directory.mkpath(parent_directory.path());

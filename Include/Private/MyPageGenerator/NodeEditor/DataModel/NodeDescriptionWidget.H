@@ -16,52 +16,51 @@
  * g1999raemzani@gmail.com
  */
 
-#ifndef MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
-#define MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
+#ifndef MYPAGEGENERATOR_PRIVATE_NODEEDITOR_DATAMODEL_NODEDESCRIPTION_H
+#define MYPAGEGENERATOR_PRIVATE_NODEEDITOR_DATAMODEL_NODEDESCRIPTION_H
 
 #include <QtCore/QPointer>
+#include <QtCore/QString>
 #include <QtCore/QObject>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QToolButton>
+#include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
 
 namespace gccore {
 namespace my_page_generator {
 namespace widgets {
-class PathInput;
+class LineEdit;
 }  // namespace widgets
-namespace node_editor {
-class Widget;
-}  // namespace node_editor
 }  // namespace my_page_generator
 }  // namespace gccore
 
 namespace gccore {
 namespace my_page_generator {
-class MainWindow : public QMainWindow {
+namespace node_editor {
+namespace data_models {
+namespace embedded_widgets {
+class NodeDescription : public QWidget {
   Q_OBJECT
-
  public:
-  explicit MainWindow(QWidget* const parent = nullptr);
+  using LayoutType = QVBoxLayout;
+
+  explicit NodeDescription(QWidget* const parent = nullptr);
+
+  void setFileName(QString const& new_file_name);
+  QString fileName() const;
 
  private:
-  QPointer<QVBoxLayout> layout() const;
+  QPointer<LayoutType> layout() const;
 
   void generateView();
-  void generateCenteralWidget();
   void generateLayout();
-  void generateNodeEditor();
-  void generateRootDirectoryWidget();
-  void generateGenerateButtonWidget();
+  void generateFileNameSection();
 
-  Q_SLOT void onGenerateButtonClicked();
-
-  QPointer<QWidget> centeral_widget_;
-  QPointer<node_editor::Widget> node_editor_widget_;
-  QPointer<widgets::PathInput> root_directory_widget_;
-  QPointer<QToolButton> generate_button_widget_;
+  QPointer<widgets::LineEdit> file_name_widget_;
 };
+}  // namespace embedded_widgets
+}  // namespace data_models
+}  // namespace node_editor
 }  // namespace my_page_generator
 }  // namespace gccore
 
-#endif  // MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
+#endif  // MYPAGEGENERATOR_PRIVATE_NODEEDITOR_DATAMODEL_NODEDESCRIPTION_H

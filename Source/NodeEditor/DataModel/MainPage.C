@@ -18,6 +18,7 @@
 
 #include <MyPageGenerator/NodeEditor/DataModel/MainPage.H>
 
+#include <MyPageGenerator/NodeEditor/DataModel/NodeDescriptionWidget.H>
 #include <MyPageGenerator/Widget/MDEditor.H>
 #include <MyPageGenerator/Utility/MarkdownConvertor.H>
 #include <MyPageGenerator/Constants.H>
@@ -43,28 +44,36 @@ QString MainPageWidget::content() const {
   return md_editor_->text();
 }
 
-void MainPageWidget::setFilePath(QString const& new_path) {
-  file_path_ = new_path;
-}
-QString MainPageWidget::filePath() const { return file_path_; }
-
-QPointer<QHBoxLayout> MainPageWidget::layout() const {
+QPointer<MainPageWidget::LayoutType> MainPageWidget::layout() const {
   assert(QWidget::layout() != nullptr);
-  return qobject_cast<QHBoxLayout*>(QWidget::layout());
+  return qobject_cast<LayoutType*>(QWidget::layout());
 }
 
 void MainPageWidget::generateView() {
   generateLayout();
+  generateStyleSheet();
+  generateNodeDescriptionSection();
   generateButton();
   generateMDEditor();
 }
 void MainPageWidget::generateLayout() {
-  QHBoxLayout* const layout = new QHBoxLayout;
+  LayoutType* const layout = new LayoutType;
   setLayout(layout);
 }
+void MainPageWidget::generateStyleSheet() {
+  this->QWidget::setObjectName("MainPageWidget_generateStyleSheet");
+  setStyleSheet(
+      "QWidget#MainPageWidget_generateStyleSheet { "
+      "background-color: transparent; }");
+}
+void MainPageWidget::generateNodeDescriptionSection() {
+  node_description_ = new NodeDescription;
+  layout()->addWidget(node_description_);
+}
 void MainPageWidget::generateButton() {
-  button_ = new QPushButton("Edit");
-  connect(button_, &QPushButton::clicked, this,
+  button_ = new QToolButton;
+  button_->setText("Edit Page Content");
+  connect(button_, &QToolButton::clicked, this,
           &MainPageWidget::onButtonClicked);
   layout()->addWidget(button_);
 }

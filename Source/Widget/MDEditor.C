@@ -33,8 +33,8 @@ QString MDEditor::text() const {
 }
 
 QPointer<QHBoxLayout> MDEditor::layout() const {
-  assert(QWidget::layout() != nullptr);
-  return qobject_cast<QHBoxLayout*>(QWidget::layout());
+  assert(this->QWidget::layout() != nullptr);
+  return qobject_cast<QHBoxLayout*>(this->QWidget::layout());
 }
 
 void MDEditor::generateView() {

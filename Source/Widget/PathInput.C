@@ -67,6 +67,7 @@ void PathInput::generateInputPathWidget() {
 }
 void PathInput::generateBrowseButtonWidget() {
   browse_button_widget_ = new QToolButton;
+  browse_button_widget_->setText("Browse");
   connect(browse_button_widget_, &QToolButton::clicked, this,
           &PathInput::onBrowseButtonClicked);
   layout()->addWidget(browse_button_widget_);

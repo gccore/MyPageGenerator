@@ -43,6 +43,7 @@ void Widget::exportTo(ExportKinds const mode, QString const& path) {
 }
 void Widget::exportToHtml(QString const& path) {
   assert(flow_scene_ != nullptr);
+
   flow_scene_->iterateOverNodeData(
       [directory_path = path](QtNodes::NodeDataModel* const data_model) {
         assert(data_model != nullptr);

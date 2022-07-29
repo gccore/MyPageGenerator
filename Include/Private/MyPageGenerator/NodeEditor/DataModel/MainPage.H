@@ -23,7 +23,7 @@
 
 #include <QtCore/QPointer>
 #include <QtCore/QObject>
-#include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
 
@@ -32,6 +32,13 @@ namespace my_page_generator {
 namespace widgets {
 class MDEditor;
 }  // namespace widgets
+namespace node_editor {
+namespace data_models {
+namespace embedded_widgets {
+class NodeDescription;
+}  // namespace embedded_widgets
+}  // namespace data_models
+}  // namespace node_editor
 }  // namespace my_page_generator
 }  // namespace gccore
 
@@ -44,27 +51,28 @@ class MainPageWidget : public QWidget {
   Q_OBJECT
 
  public:
+  using LayoutType = QVBoxLayout;
+
   explicit MainPageWidget(QWidget* const parent = nullptr);
 
   void setContent(QString const& new_content);
   QString content() const;
 
-  void setFilePath(QString const& new_path);
-  QString filePath() const;
-
  private:
-  QPointer<QHBoxLayout> layout() const;
+  QPointer<LayoutType> layout() const;
 
   void generateView();
   void generateLayout();
+  void generateStyleSheet();
+  void generateNodeDescriptionSection();
   void generateButton();
   void generateMDEditor();
 
   Q_SLOT void onButtonClicked();
 
-  QPointer<QPushButton> button_;
+  QPointer<QToolButton> button_;
+  QPointer<NodeDescription> node_description_;
   QPointer<widgets::MDEditor> md_editor_;
-  QString file_path_;
 };
 }  // namespace embedded_widgets
 
