@@ -16,53 +16,49 @@
  * g1999raemzani@gmail.com
  */
 
-#ifndef MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
-#define MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
+#ifndef MYPAGEGENERATOR_PRIVATE_WIDGET_PATHINPUT_H
+#define MYPAGEGENERATOR_PRIVATE_WIDGET_PATHINPUT_H
 
 #include <QtCore/QPointer>
 #include <QtCore/QObject>
-#include <QtWidgets/QMainWindow>
 #include <QtWidgets/QToolButton>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
+#include <QtWidgets/QLabel>
 
 namespace gccore {
 namespace my_page_generator {
 namespace widgets {
-class PathInput;
-}  // namespace widgets
-namespace node_editor {
-class Widget;
-}  // namespace node_editor
-}  // namespace my_page_generator
-}  // namespace gccore
-
-namespace gccore {
-namespace my_page_generator {
-class MainWindow : public QMainWindow {
+class PathInput : public QWidget {
   Q_OBJECT
 
  public:
-  explicit MainWindow(QWidget* const parent = nullptr);
+  explicit PathInput(QWidget* const parent = nullptr);
+
+  void setPath(QString const& new_path);
+  QString path() const;
+
+  void setPlaceholderText(QString const& new_placeholder_text);
+  QString placeholderText() const;
+
+  Q_SIGNAL void pathChanged(QString const& path);
 
  private:
-  QPointer<QVBoxLayout> layout() const;
+  QPointer<QHBoxLayout> layout() const;
 
   void generateView();
-  void generateCenteralWidget();
   void generateLayout();
-  void generateNodeEditor();
-  void generateRootDirectoryWidget();
-  void generateGenerateButtonWidget();
+  void generateInputPathWidget();
+  void generateBrowseButtonWidget();
 
-  Q_SLOT void onRootDirectoryChanged(QString const& root_directory);
-  Q_SLOT void onGenerateButtonClicked();
+  Q_SLOT void onBrowseButtonClicked();
 
-  QPointer<QWidget> centeral_widget_;
-  QPointer<node_editor::Widget> node_editor_widget_;
-  QPointer<widgets::PathInput> root_directory_widget_;
-  QPointer<QToolButton> generate_button_widget_;
+  QPointer<QToolButton> browse_button_widget_;
+  QPointer<QLineEdit> input_path_widget_;
 };
+}  // namespace widgets
 }  // namespace my_page_generator
 }  // namespace gccore
 
-#endif  // MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
+#endif  // MYPAGEGENERATOR_PRIVATE_WIDGET_PATHINPUT_H

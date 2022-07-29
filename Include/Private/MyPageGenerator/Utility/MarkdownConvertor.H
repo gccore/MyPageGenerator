@@ -16,24 +16,28 @@
  * g1999raemzani@gmail.com
  */
 
-#ifndef MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
-#define MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
+#ifndef MYPAGEGENERATOR_PRIVATE_UTILITY_MARKDOWNCONVERTOR_H
+#define MYPAGEGENERATOR_PRIVATE_UTILITY_MARKDOWNCONVERTOR_H
+
+#include <QtCore/QString>
 
 namespace gccore {
 namespace my_page_generator {
-namespace constants {
-auto constexpr kWindowTitle = "Page Generator - GCCORE";
-auto constexpr kMainPageCaption = "Main Page";
-auto constexpr kMainPageInputPortCaption = "Subpages";
-auto constexpr kNameProperty = "NameProperty";
-auto constexpr kMainPageNameProperty = kMainPageCaption;
+namespace utilities {
+class MarkdownConvertor {
+ public:
+  enum ExportKinds { EK_Html };
 
-namespace properties {
-auto constexpr kPath = "FilePath";
-auto constexpr kHtml = "Html";
-}  // namespace properties
-}  // namespace constants
+  explicit MarkdownConvertor(QString const& markdown);
+
+  QString exportTo(ExportKinds const mode) const;
+  QString exportToHtml() const;
+
+ private:
+  QString markdown_;
+};
+}  // namespace utilities
 }  // namespace my_page_generator
 }  // namespace gccore
 
-#endif  // MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
+#endif  // MYPAGEGENERATOR_PRIVATE_UTILITY_MARKDOWNCONVERTOR_H

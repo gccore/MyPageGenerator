@@ -16,24 +16,38 @@
  * g1999raemzani@gmail.com
  */
 
-#ifndef MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
-#define MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
+#ifndef MYPAGEGENERATOR_PRIVATE_WIDGET_MDEDITOR_H
+#define MYPAGEGENERATOR_PRIVATE_WIDGET_MDEDITOR_H
+
+#include <QtCore/QObject>
+#include <QtCore/QPointer>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QLayout>
 
 namespace gccore {
 namespace my_page_generator {
-namespace constants {
-auto constexpr kWindowTitle = "Page Generator - GCCORE";
-auto constexpr kMainPageCaption = "Main Page";
-auto constexpr kMainPageInputPortCaption = "Subpages";
-auto constexpr kNameProperty = "NameProperty";
-auto constexpr kMainPageNameProperty = kMainPageCaption;
+namespace widgets {
+class MDEditor : public QWidget {
+  Q_OBJECT
 
-namespace properties {
-auto constexpr kPath = "FilePath";
-auto constexpr kHtml = "Html";
-}  // namespace properties
-}  // namespace constants
+ public:
+  explicit MDEditor(QWidget* const parent = nullptr);
+
+  void setText(QString const& content);
+  QString text() const;
+
+ private:
+  QPointer<QHBoxLayout> layout() const;
+
+  void generateView();
+  void generateLayout();
+  void generateTextEditWidget();
+
+  QPointer<QTextEdit> text_edit_;
+};
+}  // namespace widgets
 }  // namespace my_page_generator
 }  // namespace gccore
 
-#endif  // MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
+#endif  // GCCORE_MY_PAGE_GENERATOR_WIDGETS_MDEDITOR_H

@@ -1,6 +1,3 @@
 [submodule "ThirdParty/NodeEditor"]
 	path = ThirdParty/NodeEditor
 	url = https://github.com/paceholder/nodeeditor.git
-[submodule "ThirdParty/MD4C"]
-	path = ThirdParty/MD4C
-	url = https://github.com/mity/md4c.git

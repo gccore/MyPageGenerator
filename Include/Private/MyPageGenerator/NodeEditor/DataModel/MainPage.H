@@ -23,9 +23,17 @@
 
 #include <QtCore/QPointer>
 #include <QtCore/QObject>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
-#include <QtWidgets/QLabel>
+
+namespace gccore {
+namespace my_page_generator {
+namespace widgets {
+class MDEditor;
+}  // namespace widgets
+}  // namespace my_page_generator
+}  // namespace gccore
 
 namespace gccore {
 namespace my_page_generator {
@@ -38,22 +46,41 @@ class MainPageWidget : public QWidget {
  public:
   explicit MainPageWidget(QWidget* const parent = nullptr);
 
-  void setText(QString const& new_text);
+  void setContent(QString const& new_content);
+  QString content() const;
+
+  void setFilePath(QString const& new_path);
+  QString filePath() const;
 
  private:
-  QPointer<QHBoxLayout> getLayout() const;
+  QPointer<QHBoxLayout> layout() const;
 
   void generateView();
   void generateLayout();
-  void generateWidget();
+  void generateButton();
+  void generateMDEditor();
 
-  QPointer<QLabel> label_;
+  Q_SLOT void onButtonClicked();
+
+  QPointer<QPushButton> button_;
+  QPointer<widgets::MDEditor> md_editor_;
+  QString file_path_;
 };
 }  // namespace embedded_widgets
 
 class MainPage : public QtNodes::NodeDataModel {
+  Q_OBJECT
+
+  Q_PROPERTY(QString FilePath READ filePath WRITE setFilePath)
+  Q_PROPERTY(QString Html READ exportToHtml CONSTANT)
+
  public:
   MainPage();
+
+  void setFilePath(QString const& new_file_path);
+  QString filePath() const;
+
+  QString exportToHtml() const;
 
   QWidget* embeddedWidget() override;
 
@@ -83,6 +110,7 @@ class MainPage : public QtNodes::NodeDataModel {
   void generateView();
 
   QPointer<embedded_widgets::MainPageWidget> embedded_widget_;
+  QString file_path_;
 };
 }  // namespace data_models
 }  // namespace node_editor

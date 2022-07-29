@@ -18,7 +18,12 @@
 
 #include <MyPageGenerator/NodeEditor/DataModel/MainPage.H>
 
+#include <MyPageGenerator/Widget/MDEditor.H>
+#include <MyPageGenerator/Utility/MarkdownConvertor.H>
 #include <MyPageGenerator/Constants.H>
+
+#include <QtCore/QFileInfo>
+#include <QtWidgets/QMessageBox>
 
 namespace gccore {
 namespace my_page_generator {
@@ -29,31 +34,56 @@ MainPageWidget::MainPageWidget(QWidget* const parent) : QWidget(parent) {
   generateView();
 }
 
-void MainPageWidget::setText(QString const& new_text) {
-  assert(label_ != nullptr);
-  label_->setText(new_text);
+void MainPageWidget::setContent(QString const& new_content) {
+  assert(md_editor_ != nullptr);
+  md_editor_->setText(new_content);
+}
+QString MainPageWidget::content() const {
+  assert(md_editor_ != nullptr);
+  return md_editor_->text();
 }
 
-QPointer<QHBoxLayout> MainPageWidget::getLayout() const {
-  assert(layout() != nullptr);
-  return qobject_cast<QHBoxLayout*>(layout());
+void MainPageWidget::setFilePath(QString const& new_path) {
+  file_path_ = new_path;
+}
+QString MainPageWidget::filePath() const { return file_path_; }
+
+QPointer<QHBoxLayout> MainPageWidget::layout() const {
+  assert(QWidget::layout() != nullptr);
+  return qobject_cast<QHBoxLayout*>(QWidget::layout());
 }
 
 void MainPageWidget::generateView() {
   generateLayout();
-  generateWidget();
+  generateButton();
+  generateMDEditor();
 }
 void MainPageWidget::generateLayout() {
   QHBoxLayout* const layout = new QHBoxLayout;
   setLayout(layout);
 }
-void MainPageWidget::generateWidget() {
-  label_ = new QLabel("Testing");
-  getLayout()->addWidget(label_);
+void MainPageWidget::generateButton() {
+  button_ = new QPushButton("Edit");
+  connect(button_, &QPushButton::clicked, this,
+          &MainPageWidget::onButtonClicked);
+  layout()->addWidget(button_);
 }
+void MainPageWidget::generateMDEditor() { md_editor_ = new widgets::MDEditor; }
+
+void MainPageWidget::onButtonClicked() { md_editor_->show(); }
 }  // namespace embedded_widgets
 
 MainPage::MainPage() { generateView(); }
+
+void MainPage::setFilePath(QString const& new_file_path) {
+  file_path_ = new_file_path;
+}
+QString MainPage::filePath() const { return /*file_path_*/ "index.html"; }
+
+QString MainPage::exportToHtml() const {
+  return utilities::MarkdownConvertor(embedded_widget_->content())
+      .exportTo(utilities::MarkdownConvertor::EK_Html);
+}
 
 QWidget* MainPage::embeddedWidget() {
   assert(embedded_widget_ != nullptr);
@@ -113,10 +143,6 @@ void MainPage::setInData(std::shared_ptr<QtNodes::NodeData> node_data,
   Q_UNUSED(node_data)
   Q_UNUSED(port)
   Q_UNUSED(connection_id)
-
-  if (embedded_widget_ != nullptr) {
-    embedded_widget_->setText(QTime::currentTime().toString());
-  }
 }
 
 std::shared_ptr<QtNodes::NodeData> MainPage::outData(QtNodes::PortIndex port) {

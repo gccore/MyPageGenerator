@@ -25,12 +25,16 @@ set(private_headers_dir ${headers_dir}/Private)
 
 file(GLOB source_files
   Source/*.C
+  Source/Widget/*.C
+  Source/Utility/*.C
   Source/NodeEditor/*.C
   Source/NodeEditor/DataModel/*.C
 )
 file(GLOB public_header_files ${public_headers_dir}/${PROJECT_NAME}/*.H)
 file(GLOB private_header_files
   ${private_headers_dir}/${PROJECT_NAME}/*.H
+  ${private_headers_dir}/${PROJECT_NAME}/Widget/*.H
+  ${private_headers_dir}/${PROJECT_NAME}/Utility/*.H
   ${private_headers_dir}/${PROJECT_NAME}/NodeEditor/*.H
   ${private_headers_dir}/${PROJECT_NAME}/NodeEditor/DataModel/*.H
 )
