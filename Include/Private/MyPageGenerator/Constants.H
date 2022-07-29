@@ -16,15 +16,15 @@
  * g1999raemzani@gmail.com
  */
 
-#include <MyPageGenerator/MainWindow.H>
+#ifndef MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
+#define MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
 
-#include <QtWidgets/QApplication>
+namespace gccore {
+namespace my_page_generator {
+namespace constants {
+auto constexpr kWindowTitle = "Page Generator - GCCORE";
+}  // namespace constants
+}  // namespace my_page_generator
+}  // namespace gccore
 
-int main(int argc, char** argv) {
-  QApplication application(argc, argv);
-
-  gccore::my_page_generator::MainWindow main_window;
-  main_window.show();
-
-  return application.exec();
-}
+#endif  // MYPAGEGENERATOR_PRIVATE_CONSTANTS_H

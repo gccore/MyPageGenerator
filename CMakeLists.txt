@@ -23,9 +23,12 @@ set(headers_dir ${PROJECT_SOURCE_DIR}/Include)
 set(public_headers_dir ${headers_dir}/Public)
 set(private_headers_dir ${headers_dir}/Private)
 
-file(GLOB source_files Source/*.C)
+file(GLOB source_files Source/*.C Source/NodeEditor/*.C)
 file(GLOB public_header_files ${public_headers_dir}/${PROJECT_NAME}/*.H)
-file(GLOB private_header_files ${private_headers_dir}/${PROJECT_NAME}/*.H)
+file(GLOB private_header_files
+  ${private_headers_dir}/${PROJECT_NAME}/*.H
+  ${private_headers_dir}/${PROJECT_NAME}/NodeEditor/*.H
+)
 
 source_group("Source Files"
   FILES
@@ -58,7 +61,7 @@ find_program(ccache_binary_path ccache REQUIRED)
 
 set_target_properties(${PROJECT_NAME}
   PROPERTIES
-    CXX_STANDARD 11
+    CXX_STANDARD 14
     CXX_STANDARD_REQUIRED on
     CXX_EXTENSIONS off
     CXX_COMPILER_LAUNCHER ${ccache_binary_path}
