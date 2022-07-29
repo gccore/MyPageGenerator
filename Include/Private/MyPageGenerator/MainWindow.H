@@ -22,19 +22,7 @@
 #include <QtCore/QPointer>
 #include <QtCore/QObject>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QLayout>
-
-namespace gccore {
-namespace my_page_generator {
-namespace widgets {
-class PathInput;
-}  // namespace widgets
-namespace node_editor {
-class Widget;
-}  // namespace node_editor
-}  // namespace my_page_generator
-}  // namespace gccore
+#include <QtWidgets/QMdiArea>
 
 namespace gccore {
 namespace my_page_generator {
@@ -45,21 +33,11 @@ class MainWindow : public QMainWindow {
   explicit MainWindow(QWidget* const parent = nullptr);
 
  private:
-  QPointer<QVBoxLayout> layout() const;
-
   void generateView();
   void generateCenteralWidget();
   void generateLayout();
-  void generateNodeEditor();
-  void generateRootDirectoryWidget();
-  void generateGenerateButtonWidget();
 
-  Q_SLOT void onGenerateButtonClicked();
-
-  QPointer<QWidget> centeral_widget_;
-  QPointer<node_editor::Widget> node_editor_widget_;
-  QPointer<widgets::PathInput> root_directory_widget_;
-  QPointer<QToolButton> generate_button_widget_;
+  QPointer<QMdiArea> centeral_widget_;
 };
 }  // namespace my_page_generator
 }  // namespace gccore
