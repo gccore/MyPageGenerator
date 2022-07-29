@@ -23,11 +23,16 @@ set(headers_dir ${PROJECT_SOURCE_DIR}/Include)
 set(public_headers_dir ${headers_dir}/Public)
 set(private_headers_dir ${headers_dir}/Private)
 
-file(GLOB source_files Source/*.C Source/NodeEditor/*.C)
+file(GLOB source_files
+  Source/*.C
+  Source/NodeEditor/*.C
+  Source/NodeEditor/DataModel/*.C
+)
 file(GLOB public_header_files ${public_headers_dir}/${PROJECT_NAME}/*.H)
 file(GLOB private_header_files
   ${private_headers_dir}/${PROJECT_NAME}/*.H
   ${private_headers_dir}/${PROJECT_NAME}/NodeEditor/*.H
+  ${private_headers_dir}/${PROJECT_NAME}/NodeEditor/DataModel/*.H
 )
 
 source_group("Source Files"

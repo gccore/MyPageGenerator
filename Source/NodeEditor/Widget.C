@@ -18,6 +18,10 @@
 
 #include <MyPageGenerator/NodeEditor/Widget.H>
 
+#include <MyPageGenerator/NodeEditor/DataModel/MainPage.H>
+
+#include <nodes/DataModelRegistry>
+
 namespace gccore {
 namespace my_page_generator {
 namespace node_editor {
@@ -31,6 +35,7 @@ QPointer<QHBoxLayout> Widget::getLayout() const {
 void Widget::generateView() {
   generateLayout();
   generateNodeEditor();
+  generateNodeDataModel();
 }
 void Widget::generateLayout() {
   QHBoxLayout* const layout = new QHBoxLayout;
@@ -41,6 +46,15 @@ void Widget::generateNodeEditor() {
   flow_view_ = new QtNodes::FlowView(flow_scene_);
 
   getLayout()->addWidget(flow_view_);
+}
+void Widget::generateNodeDataModel() {
+  assert(flow_scene_ != nullptr);
+
+  std::shared_ptr<QtNodes::DataModelRegistry> registery(
+      new QtNodes::DataModelRegistry);
+  registery->registerModel<data_models::MainPage>();
+
+  flow_scene_->setRegistry(registery);
 }
 }  // namespace node_editor
 }  // namespace my_page_generator

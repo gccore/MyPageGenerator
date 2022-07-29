@@ -42,6 +42,7 @@ class Widget : public QWidget {
   void generateView();
   void generateLayout();
   void generateNodeEditor();
+  void generateNodeDataModel();
 
   QPointer<QtNodes::FlowScene> flow_scene_;
   QPointer<QtNodes::FlowView> flow_view_;

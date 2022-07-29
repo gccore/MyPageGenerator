@@ -23,6 +23,8 @@ namespace gccore {
 namespace my_page_generator {
 namespace constants {
 auto constexpr kWindowTitle = "Page Generator - GCCORE";
+auto constexpr kMainPageCaption = "Main Page";
+auto constexpr kMainPageInputPortCaption = "Subpages";
 }  // namespace constants
 }  // namespace my_page_generator
 }  // namespace gccore
