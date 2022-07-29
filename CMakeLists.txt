@@ -83,6 +83,9 @@ target_include_directories(${PROJECT_NAME}
     $<BUILD_INTERFACE:${private_headers_dir}>
 )
 
+include(ThirdParty/ThirdParty.cmake)
+Core_ConfigureProjectThirdParties(${PROJECT_NAME})
+
 set(cmake_configs_dir lib/cmake/${project_with_version_name})
 
 install(
