@@ -36,6 +36,10 @@ class MainWindow : public QMainWindow {
   void generateView();
   void generateCenteralWidget();
   void generateLayout();
+  void generateMenuBar();
+  void generateFileMenu();
+
+  Q_SLOT void onNewProjectClicked();
 
   QPointer<QMdiArea> centeral_widget_;
 };

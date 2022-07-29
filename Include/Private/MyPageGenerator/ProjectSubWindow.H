@@ -36,15 +36,13 @@ class Widget;
 
 namespace gccore {
 namespace my_page_generator {
-class ProjectSubWindow : public QMdiSubWindow {
+class ProjectSubWindow : public QWidget {
   Q_OBJECT
 
  public:
   using LayoutType = QVBoxLayout;
 
-  explicit ProjectSubWindow(
-      QWidget* const parent = nullptr,
-      Qt::WindowFlags const window_flag = Qt::WindowFlags());
+  explicit ProjectSubWindow(QWidget* const parent = nullptr);
 
  private:
   QPointer<LayoutType> layout() const;

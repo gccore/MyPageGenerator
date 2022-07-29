@@ -22,15 +22,13 @@
 
 namespace gccore {
 namespace my_page_generator {
-ProjectSubWindow::ProjectSubWindow(QWidget* const parent,
-                                   Qt::WindowFlags const window_flags)
-    : QMdiSubWindow(parent, window_flags) {
+ProjectSubWindow::ProjectSubWindow(QWidget* const parent) : QWidget(parent) {
   generateView();
 }
 
 QPointer<ProjectSubWindow::LayoutType> ProjectSubWindow::layout() const {
-  assert(this->QMdiSubWindow::layout() != nullptr);
-  return qobject_cast<LayoutType*>(this->QMdiSubWindow::layout());
+  assert(this->QWidget::layout() != nullptr);
+  return qobject_cast<LayoutType*>(this->QWidget::layout());
 }
 
 void ProjectSubWindow::generateView() {
@@ -40,7 +38,7 @@ void ProjectSubWindow::generateView() {
 }
 void ProjectSubWindow::generateLayout() {
   LayoutType* const layout = new LayoutType;
-  this->QMdiSubWindow::setLayout(layout);
+  this->QWidget::setLayout(layout);
 }
 void ProjectSubWindow::generateNodeEditor() {
   node_editor_widget_ = new node_editor::Widget;

@@ -18,7 +18,12 @@
 
 #include <MyPageGenerator/MainWindow.H>
 
+#include <MyPageGenerator/ProjectSubWindow.H>
 #include <MyPageGenerator/Constants.H>
+
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
 
 namespace gccore {
 namespace my_page_generator {
@@ -29,11 +34,38 @@ MainWindow::MainWindow(QWidget* const parent) : QMainWindow(parent) {
 void MainWindow::generateView() {
   generateLayout();
   generateCenteralWidget();
+  generateMenuBar();
+  generateFileMenu();
 }
 void MainWindow::generateCenteralWidget() {
   centeral_widget_ = new QMdiArea;
   setCentralWidget(centeral_widget_);
 }
 void MainWindow::generateLayout() { setWindowTitle(constants::kWindowTitle); }
+void MainWindow::generateMenuBar() {
+  QMenuBar* const menu_bar = new QMenuBar;
+  this->QMainWindow::setMenuBar(menu_bar);
+}
+void MainWindow::generateFileMenu() {
+  assert(this->QMainWindow::menuBar() != nullptr);
+
+  QAction* const new_project_action = new QAction;
+  new_project_action->setText("&New");
+  connect(new_project_action, &QAction::triggered, this,
+          &MainWindow::onNewProjectClicked);
+
+  QMenu* const file_menu = new QMenu;
+  file_menu->setTitle("File");
+  file_menu->addAction(new_project_action);
+
+  this->QMainWindow::menuBar()->addMenu(file_menu);
+}
+
+void MainWindow::onNewProjectClicked() {
+  assert(centeral_widget_ != nullptr);
+  ProjectSubWindow* const project_sub_window = new ProjectSubWindow;
+  centeral_widget_->addSubWindow(project_sub_window);
+  project_sub_window->show();
+}
 }  // namespace my_page_generator
 }  // namespace gccore
