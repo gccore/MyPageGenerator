@@ -21,6 +21,8 @@
 #include <MyPageGenerator/ProjectSubWindow.H>
 #include <MyPageGenerator/Constants.H>
 
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QMenu>
@@ -63,9 +65,23 @@ void MainWindow::generateFileMenu() {
 
 void MainWindow::onNewProjectClicked() {
   assert(centeral_widget_ != nullptr);
+
   ProjectSubWindow* const project_sub_window = new ProjectSubWindow;
   centeral_widget_->addSubWindow(project_sub_window);
   project_sub_window->show();
+
+  QString const& file = QFileDialog::getExistingDirectory(
+      this, "Project Directory", qApp->applicationDirPath());
+
+  if (!file.isEmpty()) {
+    structures::ProjectDescription new_project;
+    new_project.root_directory = file;
+    new_project.window = project_sub_window;
+
+    projects_map_[project_sub_window->projectId()] = new_project;
+  } else {
+    centeral_widget_->closeActiveSubWindow();
+  }
 }
 }  // namespace my_page_generator
 }  // namespace gccore

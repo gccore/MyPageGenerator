@@ -21,6 +21,7 @@
 
 #include <QtCore/QPointer>
 #include <QtCore/QObject>
+#include <QtCore/QUuid>
 #include <QtWidgets/QMdiSubWindow>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QLayout>
@@ -44,8 +45,14 @@ class ProjectSubWindow : public QWidget {
 
   explicit ProjectSubWindow(QWidget* const parent = nullptr);
 
+  void setProjectId(QUuid const& new_project_id);
+  QUuid projectId() const;
+
  private:
   QPointer<LayoutType> layout() const;
+
+  void configure();
+  void configureProjectId();
 
   void generateView();
   void generateLayout();
@@ -56,6 +63,7 @@ class ProjectSubWindow : public QWidget {
 
   QPointer<node_editor::Widget> node_editor_widget_;
   QPointer<QToolButton> generate_button_;
+  QUuid project_id_;
 };
 }  // namespace my_page_generator
 }  // namespace gccore

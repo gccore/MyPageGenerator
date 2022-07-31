@@ -16,37 +16,31 @@
  * g1999raemzani@gmail.com
  */
 
-#ifndef MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
-#define MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
-
-#include <MyPageGenerator/Structure/ProjectDescription.H>
+#ifndef MYPAGEGENERATOR_PRIVATE_STRUCTURE_PROJECTDESCRIPTION_H
+#define MYPAGEGENERATOR_PRIVATE_STRUCTURE_PROJECTDESCRIPTION_H
 
 #include <QtCore/QPointer>
-#include <QtCore/QObject>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMdiArea>
+#include <QtCore/QString>
+#include <QtCore/QUuid>
+#include <QtCore/QMap>
 
 namespace gccore {
 namespace my_page_generator {
-class MainWindow : public QMainWindow {
-  Q_OBJECT
-
- public:
-  explicit MainWindow(QWidget* const parent = nullptr);
-
- private:
-  void generateView();
-  void generateCenteralWidget();
-  void generateLayout();
-  void generateMenuBar();
-  void generateFileMenu();
-
-  Q_SLOT void onNewProjectClicked();
-
-  QPointer<QMdiArea> centeral_widget_;
-  structures::ProjectDescription::Map projects_map_;
-};
+class ProjectSubWindow;
 }  // namespace my_page_generator
 }  // namespace gccore
 
-#endif  // MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
+namespace gccore {
+namespace my_page_generator {
+namespace structures {
+struct ProjectDescription {
+  using Map = QMap<QUuid, ProjectDescription>;
+
+  QPointer<ProjectSubWindow> window;
+  QString root_directory;
+};
+}  // namespace structures
+}  // namespace my_page_generator
+}  // namespace gccore
+
+#endif  // MYPAGEGENERATOR_PRIVATE_STRUCTURE_PROJECTDESCRIPTION_H

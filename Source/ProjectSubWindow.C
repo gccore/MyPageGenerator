@@ -23,12 +23,23 @@
 namespace gccore {
 namespace my_page_generator {
 ProjectSubWindow::ProjectSubWindow(QWidget* const parent) : QWidget(parent) {
+  configure();
   generateView();
 }
+
+void ProjectSubWindow::setProjectId(QUuid const& new_project_id) {
+  project_id_ = new_project_id;
+}
+QUuid ProjectSubWindow::projectId() const { return project_id_; }
 
 QPointer<ProjectSubWindow::LayoutType> ProjectSubWindow::layout() const {
   assert(this->QWidget::layout() != nullptr);
   return qobject_cast<LayoutType*>(this->QWidget::layout());
+}
+
+void ProjectSubWindow::configure() { configureProjectId(); }
+void ProjectSubWindow::configureProjectId() {
+  project_id_ = QUuid::createUuid();
 }
 
 void ProjectSubWindow::generateView() {
