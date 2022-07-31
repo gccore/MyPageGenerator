@@ -18,6 +18,7 @@
 
 #include <MyPageGenerator/ProjectSubWindow.H>
 
+#include <MyPageGenerator/Utility/CommonWidgetUtilities.H>
 #include <MyPageGenerator/NodeEditor/Widget.H>
 
 namespace gccore {
@@ -46,21 +47,41 @@ void ProjectSubWindow::generateView() {
   generateLayout();
   generateNodeEditor();
   generateGenerateButton();
+  generateSaveMeButton();
+  generateStatusButtonsSpacerItem();
 }
 void ProjectSubWindow::generateLayout() {
   LayoutType* const layout = new LayoutType;
   this->QWidget::setLayout(layout);
+
+  status_button_layout_ = new QHBoxLayout;
+  layout->addWidget(widgets::utilities::CreateHorizontalFrame());
+  layout->addLayout(status_button_layout_);
 }
 void ProjectSubWindow::generateNodeEditor() {
   node_editor_widget_ = new node_editor::Widget;
-  layout()->addWidget(node_editor_widget_);
+  layout()->insertWidget(0, node_editor_widget_);
 }
 void ProjectSubWindow::generateGenerateButton() {
-  generate_button_ = new QToolButton;
-  generate_button_->setText("Generate");
-  connect(generate_button_, &QToolButton::clicked, this,
+  assert(status_button_layout_ != nullptr);
+  QToolButton* const generate_button = new QToolButton;
+  generate_button->setText("Generate");
+  connect(generate_button, &QToolButton::clicked, this,
           &ProjectSubWindow::onGenerateButtonClicked);
-  layout()->addWidget(generate_button_);
+  status_button_layout_->addWidget(generate_button);
+}
+void ProjectSubWindow::generateSaveMeButton() {
+  assert(status_button_layout_ != nullptr);
+  QToolButton* const save_me_button = new QToolButton;
+  save_me_button->setText("Save Me");
+  connect(save_me_button, &QToolButton::clicked, this,
+          &ProjectSubWindow::saveMe);
+  status_button_layout_->addWidget(save_me_button);
+}
+void ProjectSubWindow::generateStatusButtonsSpacerItem() {
+  assert(status_button_layout_ != nullptr);
+  status_button_layout_->addSpacerItem(
+      widgets::utilities::CreateVerticalSpacer());
 }
 
 void ProjectSubWindow::onGenerateButtonClicked() {

@@ -48,6 +48,8 @@ class ProjectSubWindow : public QWidget {
   void setProjectId(QUuid const& new_project_id);
   QUuid projectId() const;
 
+  Q_SIGNAL void saveMe();
+
  private:
   QPointer<LayoutType> layout() const;
 
@@ -58,12 +60,14 @@ class ProjectSubWindow : public QWidget {
   void generateLayout();
   void generateNodeEditor();
   void generateGenerateButton();
+  void generateSaveMeButton();
+  void generateStatusButtonsSpacerItem();
 
   Q_SLOT void onGenerateButtonClicked();
 
   QPointer<node_editor::Widget> node_editor_widget_;
-  QPointer<QToolButton> generate_button_;
   QUuid project_id_;
+  QPointer<QHBoxLayout> status_button_layout_;
 };
 }  // namespace my_page_generator
 }  // namespace gccore
