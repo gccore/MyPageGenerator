@@ -20,6 +20,7 @@
 #define MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
 
 #include <MyPageGenerator/Structure/ProjectDescription.H>
+#include <MyPageGenerator/Utility/Optional.H>
 
 #include <QtCore/QPointer>
 #include <QtCore/QObject>
@@ -40,6 +41,9 @@ class MainWindow : public QMainWindow {
   void generateLayout();
   void generateMenuBar();
   void generateFileMenu();
+
+  static utilities::Optional<QString> GetExistingDirectoryPath(
+      QWidget* const parent = nullptr);
 
   Q_SLOT void onNewProjectClicked();
 

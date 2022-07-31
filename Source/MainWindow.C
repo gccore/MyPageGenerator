@@ -63,24 +63,27 @@ void MainWindow::generateFileMenu() {
   this->QMainWindow::menuBar()->addMenu(file_menu);
 }
 
+utilities::Optional<QString> MainWindow::GetExistingDirectoryPath(
+    QWidget* const parent) {
+  QString const file = QFileDialog::getExistingDirectory(
+      parent, "Project Directory", qApp->applicationDirPath());
+  return file.isEmpty() ? utilities::kNullOptional
+                        : utilities::Optional<QString>(file);
+}
+
 void MainWindow::onNewProjectClicked() {
   assert(centeral_widget_ != nullptr);
 
-  ProjectSubWindow* const project_sub_window = new ProjectSubWindow;
-  centeral_widget_->addSubWindow(project_sub_window);
-  project_sub_window->show();
+  if (utilities::Optional<QString> const directory_path =
+          GetExistingDirectoryPath()) {
+    ProjectSubWindow* const project_sub_window = new ProjectSubWindow;
+    centeral_widget_->addSubWindow(project_sub_window);
+    project_sub_window->show();
 
-  QString const& file = QFileDialog::getExistingDirectory(
-      this, "Project Directory", qApp->applicationDirPath());
-
-  if (!file.isEmpty()) {
     structures::ProjectDescription new_project;
-    new_project.root_directory = file;
+    new_project.root_directory = directory_path.value();
     new_project.window = project_sub_window;
-
     projects_map_[project_sub_window->projectId()] = new_project;
-  } else {
-    centeral_widget_->closeActiveSubWindow();
   }
 }
 }  // namespace my_page_generator
