@@ -33,21 +33,30 @@ QString File::fileName() const { return file_name_; }
 bool File::isEmpty() const { return file_name_.isEmpty(); }
 
 void File::write(QString const& content) {
-  QFileInfo const file_info(file_name_);
-  QDir parent_directory = file_info.dir();
+  createPath();
+  openFile();
+  file_.write(content.toUtf8());
+}
+QString File::readAll() {
+  openFile();
+  return file_.readAll();
+}
 
+void File::openFile() {
+  assert(!file_name_.isEmpty());
+  if (!file_.isOpen()) {
+    file_.setFileName(file_name_);
+    file_.open(QIODevice::ReadWrite);
+    assert(file_.isOpen());
+  }
+}
+void File::createPath() {
+  QDir parent_directory = QFileInfo(file_name_).dir();
   if (!parent_directory.exists()) {
     bool const creating_parent_dir_result =
         parent_directory.mkpath(parent_directory.path());
     assert(creating_parent_dir_result);
   }
-  if (!file_.isOpen()) {
-    file_.setFileName(file_name_);
-    bool const opening_file_result = file_.open(QIODevice::ReadWrite);
-    assert(opening_file_result);
-  }
-
-  file_.write(content.toUtf8());
 }
 }  // namespace utilities
 }  // namespace my_page_generator

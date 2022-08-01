@@ -19,15 +19,21 @@
 #include <MyPageGenerator/NodeEditor/Widget.H>
 
 #include <MyPageGenerator/NodeEditor/DataModel/MainPage.H>
+#include <MyPageGenerator/Utility/CommonCoreUtilities.H>
 #include <MyPageGenerator/Utility/File.H>
 #include <MyPageGenerator/Constants.H>
 
-#include <QtCore/QDir>
+#include <QtCore/QUuid>
+#include <QtCore/QMap>
 
 #include <nodes/DataModelRegistry>
 #include <nodes/ConnectionStyle>
 #include <nodes/FlowViewStyle>
 #include <nodes/NodeStyle>
+#include <nodes/Node>
+
+#include <unordered_map>
+#include <memory>
 
 namespace gccore {
 namespace my_page_generator {
@@ -53,8 +59,82 @@ void Widget::exportToHtml(QString const& path) {
         QString const file_content =
             data_model->property(constants::properties::kHtml).toString();
 
-        utilities::File(directory_path + QDir::separator() + file_path)
+        utilities::File(utilities::JoinPath(directory_path, file_path))
             .write(file_content);
+      });
+}
+
+void Widget::serialize(QDataStream& data_stream) const {
+  assert(flow_scene_ != nullptr);
+
+  data_stream << flow_scene_->saveToMemory();
+  const_cast<Widget*>(this)->flow_scene_->iterateOverNodes(
+      [&data_stream](QtNodes::Node const* const node) {
+        assert(node != nullptr);
+        assert(node->nodeDataModel() != nullptr);
+
+        QtNodes::NodeDataModel const* const data_model = node->nodeDataModel();
+        data_stream
+            << data_model->property(constants::properties::kPath).toString()
+            << node->id();
+      });
+}
+void Widget::deserialize(QDataStream& data_stream,
+                         QString const& root_directory_path) {
+  assert(flow_scene_ != nullptr);
+
+  QByteArray flow_data;
+  data_stream >> flow_data;
+  flow_scene_->loadFromMemory(flow_data);
+
+  QString const md_dir =
+      utilities::JoinPath(root_directory_path, constants::kMdDirectory);
+
+  std::unordered_map<QUuid, std::unique_ptr<QtNodes::Node>> const& nodes =
+      flow_scene_->nodes();
+  for (std::uint32_t index = 0; index < nodes.size(); ++index) {
+    QString file_path;
+    QUuid node_id;
+    data_stream >> file_path >> node_id;
+    assert(!node_id.isNull());
+
+    auto const iterator = nodes.find(node_id);
+    assert(iterator != nodes.cend());
+
+    QtNodes::NodeDataModel* const data_model =
+        iterator->second->nodeDataModel();
+    assert(data_model != nullptr);
+
+    bool const file_path_property_result =
+        data_model->setProperty(constants::properties::kPath, file_path);
+
+    QString const md_file_path = utilities::JoinPath(md_dir, file_path);
+    QString const file_content = utilities::File(md_file_path).readAll();
+
+    bool const file_content_property_result =
+        data_model->setProperty(constants::properties::kRawMd, file_content);
+
+    assert(file_path_property_result);
+    assert(file_content_property_result);
+  }
+}
+void Widget::saveNodesContentToFile(QString const& root_directory_path) const {
+  assert(flow_scene_ != nullptr);
+
+  QString const directory_path =
+      utilities::JoinPath(root_directory_path, constants::kMdDirectory);
+
+  const_cast<Widget*>(this)->flow_scene_->iterateOverNodeData(
+      [&](QtNodes::NodeDataModel const* const data_model) {
+        QString const file_name =
+            data_model->property(constants::properties::kPath).toString();
+
+        if (!file_name.isEmpty()) {
+          QString const file_path =
+              utilities::JoinPath(directory_path, file_name);
+          utilities::File(file_path).write(
+              data_model->property(constants::properties::kRawMd).toString());
+        }
       });
 }
 

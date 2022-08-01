@@ -33,9 +33,32 @@ void ProjectSubWindow::setProjectId(QUuid const& new_project_id) {
 }
 QUuid ProjectSubWindow::projectId() const { return project_id_; }
 
+void ProjectSubWindow::setProjectDirectory(
+    QString const& new_project_directory) {
+  project_directory_ = new_project_directory;
+}
+QString ProjectSubWindow::projectDirectory() const {
+  return project_directory_;
+}
+
 QPointer<ProjectSubWindow::LayoutType> ProjectSubWindow::layout() const {
   assert(this->QWidget::layout() != nullptr);
   return qobject_cast<LayoutType*>(this->QWidget::layout());
+}
+
+void ProjectSubWindow::serialize(QDataStream& data_stream) const {
+  assert(node_editor_widget_ != nullptr);
+  node_editor_widget_->serialize(data_stream);
+}
+void ProjectSubWindow::deserialize(QDataStream& data_stream) {
+  assert(node_editor_widget_ != nullptr);
+  assert(!project_directory_.isEmpty());
+  node_editor_widget_->deserialize(data_stream, project_directory_);
+}
+void ProjectSubWindow::saveMdFiles() {
+  assert(node_editor_widget_ != nullptr);
+  assert(!project_directory_.isEmpty());
+  node_editor_widget_->saveNodesContentToFile(project_directory_);
 }
 
 void ProjectSubWindow::configure() { configureProjectId(); }
@@ -65,7 +88,7 @@ void ProjectSubWindow::generateNodeEditor() {
 void ProjectSubWindow::generateGenerateButton() {
   assert(status_button_layout_ != nullptr);
   QToolButton* const generate_button = new QToolButton;
-  generate_button->setText("Generate");
+  generate_button->setText("Generate HTML");
   connect(generate_button, &QToolButton::clicked, this,
           &ProjectSubWindow::onGenerateButtonClicked);
   status_button_layout_->addWidget(generate_button);
@@ -73,7 +96,7 @@ void ProjectSubWindow::generateGenerateButton() {
 void ProjectSubWindow::generateSaveMeButton() {
   assert(status_button_layout_ != nullptr);
   QToolButton* const save_me_button = new QToolButton;
-  save_me_button->setText("Save Me");
+  save_me_button->setText("Save Project");
   connect(save_me_button, &QToolButton::clicked, this,
           &ProjectSubWindow::saveMe);
   status_button_layout_->addWidget(save_me_button);
@@ -81,15 +104,13 @@ void ProjectSubWindow::generateSaveMeButton() {
 void ProjectSubWindow::generateStatusButtonsSpacerItem() {
   assert(status_button_layout_ != nullptr);
   status_button_layout_->addSpacerItem(
-      widgets::utilities::CreateVerticalSpacer());
+      widgets::utilities::CreateHorizontalSpacer());
 }
 
 void ProjectSubWindow::onGenerateButtonClicked() {
   assert(sender() != nullptr);
-  assert(node_editor_widget_ != nullptr);
-
-  /* node_editor_widget_->exportTo(node_editor::EK_HTML,
-                                root_directory_widget_->path()); */
+  assert(!project_directory_.isEmpty());
+  node_editor_widget_->exportTo(node_editor::EK_HTML, project_directory_);
 }
 }  // namespace my_page_generator
 }  // namespace gccore

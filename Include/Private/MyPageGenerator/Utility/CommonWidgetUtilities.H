@@ -30,11 +30,10 @@ namespace my_page_generator {
 namespace widgets {
 namespace utilities {
 inline QSpacerItem* CreateHorizontalSpacer() {
-  return new QSpacerItem(-1, 1, QSizePolicy::MinimumExpanding);
+  return new QSpacerItem(-1, 1, QSizePolicy::Expanding);
 }
 inline QSpacerItem* CreateVerticalSpacer() {
-  return new QSpacerItem(1, -1, QSizePolicy::Preferred,
-                         QSizePolicy::MinimumExpanding);
+  return new QSpacerItem(1, -1, QSizePolicy::Minimum, QSizePolicy::Expanding);
 }
 
 inline QPointer<QFrame> CreateHorizontalFrame() {

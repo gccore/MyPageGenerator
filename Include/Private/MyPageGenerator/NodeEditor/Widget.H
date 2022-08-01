@@ -23,10 +23,12 @@
 #include <nodes/FlowView>
 #include <nodes/Node>
 
-#include <QtCore/QPointer>
-#include <QtCore/QObject>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QWidget>
+
+#include <QtCore/QDataStream>
+#include <QtCore/QPointer>
+#include <QtCore/QObject>
 
 namespace gccore {
 namespace my_page_generator {
@@ -41,6 +43,11 @@ class Widget : public QWidget {
 
   void exportTo(ExportKinds const mode, QString const& path);
   void exportToHtml(QString const& path);
+
+  void serialize(QDataStream& data_stream) const;
+  void deserialize(QDataStream& data_steam, QString const& root_directory_path);
+
+  void saveNodesContentToFile(QString const& root_directory_path) const;
 
  private:
   QPointer<QHBoxLayout> layout() const;

@@ -21,11 +21,13 @@
 
 #include <nodes/NodeDataModel>
 
-#include <QtCore/QPointer>
-#include <QtCore/QObject>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLayout>
+
+#include <QtCore/QPointer>
+#include <QtCore/QString>
+#include <QtCore/QObject>
 
 namespace gccore {
 namespace my_page_generator {
@@ -55,6 +57,9 @@ class MainPageWidget : public QWidget {
 
   explicit MainPageWidget(QWidget* const parent = nullptr);
 
+  QPointer<NodeDescription> nodeDescription();
+  QPointer<widgets::MDEditor> mdEditor();
+
   void setContent(QString const& new_content);
   QString content() const;
 
@@ -81,12 +86,17 @@ class MainPage : public QtNodes::NodeDataModel {
 
   Q_PROPERTY(QString FilePath READ filePath WRITE setFilePath)
   Q_PROPERTY(QString Html READ exportToHtml CONSTANT)
+  Q_PROPERTY(QString RawMd READ rawMd WRITE setRawMd)
 
  public:
   MainPage();
+  virtual ~MainPage();
 
   void setFilePath(QString const& new_file_path);
   QString filePath() const;
+
+  void setRawMd(QString const& new_raw_md);
+  QString rawMd() const;
 
   QString exportToHtml() const;
 

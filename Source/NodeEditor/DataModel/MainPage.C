@@ -35,6 +35,15 @@ MainPageWidget::MainPageWidget(QWidget* const parent) : QWidget(parent) {
   generateView();
 }
 
+QPointer<NodeDescription> MainPageWidget::nodeDescription() {
+  assert(node_description_ != nullptr);
+  return node_description_;
+}
+QPointer<widgets::MDEditor> MainPageWidget::mdEditor() {
+  assert(md_editor_ != nullptr);
+  return md_editor_;
+}
+
 void MainPageWidget::setContent(QString const& new_content) {
   assert(md_editor_ != nullptr);
   md_editor_->setText(new_content);
@@ -84,10 +93,29 @@ void MainPageWidget::onButtonClicked() { md_editor_->show(); }
 
 MainPage::MainPage() { generateView(); }
 
-void MainPage::setFilePath(QString const& new_file_path) {
-  file_path_ = new_file_path;
+MainPage::~MainPage() {
+  if (embedded_widget_ != nullptr) {
+    embedded_widget_->deleteLater();
+  }
 }
-QString MainPage::filePath() const { return /*file_path_*/ "index.html"; }
+
+void MainPage::setFilePath(QString const& new_file_path) {
+  assert(embedded_widget_ != nullptr);
+  embedded_widget_->nodeDescription()->setFileName(new_file_path);
+}
+QString MainPage::filePath() const {
+  assert(embedded_widget_ != nullptr);
+  return embedded_widget_->nodeDescription()->fileName();
+}
+
+void MainPage::setRawMd(QString const& new_raw_md) {
+  assert(embedded_widget_ != nullptr);
+  embedded_widget_->mdEditor()->setText(new_raw_md);
+}
+QString MainPage::rawMd() const {
+  assert(embedded_widget_ != nullptr);
+  return embedded_widget_->mdEditor()->text();
+}
 
 QString MainPage::exportToHtml() const {
   return utilities::MarkdownConvertor(embedded_widget_->content())

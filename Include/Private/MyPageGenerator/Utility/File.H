@@ -35,8 +35,12 @@ class File {
   bool isEmpty() const;
 
   void write(QString const& content);
+  QString readAll();
 
  private:
+  void openFile();
+  void createPath();
+
   QString file_name_;
   QFile file_;
 };

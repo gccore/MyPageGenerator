@@ -19,13 +19,15 @@
 #ifndef MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_PROJECTSUBWINDOW_H
 #define MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_PROJECTSUBWINDOW_H
 
-#include <QtCore/QPointer>
-#include <QtCore/QObject>
-#include <QtCore/QUuid>
 #include <QtWidgets/QMdiSubWindow>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QWidget>
+
+#include <QtCore/QDataStream>
+#include <QtCore/QPointer>
+#include <QtCore/QObject>
+#include <QtCore/QUuid>
 
 namespace gccore {
 namespace my_page_generator {
@@ -48,6 +50,14 @@ class ProjectSubWindow : public QWidget {
   void setProjectId(QUuid const& new_project_id);
   QUuid projectId() const;
 
+  void setProjectDirectory(QString const& new_project_directory);
+  QString projectDirectory() const;
+
+  void serialize(QDataStream& data_stream) const;
+  void deserialize(QDataStream& data_stream);
+
+  void saveMdFiles();
+
   Q_SIGNAL void saveMe();
 
  private:
@@ -68,6 +78,7 @@ class ProjectSubWindow : public QWidget {
   QPointer<node_editor::Widget> node_editor_widget_;
   QUuid project_id_;
   QPointer<QHBoxLayout> status_button_layout_;
+  QString project_directory_;
 };
 }  // namespace my_page_generator
 }  // namespace gccore

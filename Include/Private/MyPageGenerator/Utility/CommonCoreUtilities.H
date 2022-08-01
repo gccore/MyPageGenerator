@@ -16,27 +16,20 @@
  * g1999raemzani@gmail.com
  */
 
-#ifndef MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
-#define MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
+#ifndef MYPAGEGENERATOR_UTILITIES_COMMONCOREUTILITIES_H
+#define MYPAGEGENERATOR_UTILITIES_COMMONCOREUTILITIES_H
+
+#include <QtCore/QString>
+#include <QtCore/QDir>
 
 namespace gccore {
 namespace my_page_generator {
-namespace constants {
-auto constexpr kWindowTitle = "Page Generator - GCCORE";
-auto constexpr kMainPageCaption = "Main Page";
-auto constexpr kMainPageInputPortCaption = "Subpages";
-auto constexpr kNameProperty = "NameProperty";
-auto constexpr kMainPageNameProperty = kMainPageCaption;
-auto constexpr kSaveFileName = "Settings.MyPageGenerator.GCCORE";
-auto constexpr kMdDirectory = "MD";
-
-namespace properties {
-auto constexpr kPath = "FilePath";
-auto constexpr kHtml = "Html";
-auto constexpr kRawMd = "RawMd";
-}  // namespace properties
-}  // namespace constants
+namespace utilities {
+inline QString JoinPath(QString const& left, QString const& right) {
+  return left + QDir::separator() + right;
+}
+}  // namespace utilities
 }  // namespace my_page_generator
 }  // namespace gccore
 
-#endif  // MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
+#endif  // MYPAGEGENERATOR_UTILITIES_COMMONCOREUTILITIES_H
