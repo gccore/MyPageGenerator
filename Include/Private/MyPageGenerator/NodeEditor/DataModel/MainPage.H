@@ -33,6 +33,8 @@ class MainPage : public BaseNodeDataModel {
   Q_OBJECT
 
  public:
+  MainPage();
+
   QString name() const override;
   QString caption() const override;
   bool captionVisible() const override;
@@ -54,6 +56,9 @@ class MainPage : public BaseNodeDataModel {
   std::shared_ptr<QtNodes::NodeData> outData(QtNodes::PortIndex port) override;
   ConnectionPolicy portInConnectionPolicy(
       QtNodes::PortIndex port_index) const override;
+
+ private:
+  void configure();
 };
 }  // namespace data_models
 }  // namespace node_editor

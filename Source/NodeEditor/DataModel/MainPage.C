@@ -30,6 +30,8 @@ namespace gccore {
 namespace my_page_generator {
 namespace node_editor {
 namespace data_models {
+MainPage::MainPage() { configure(); }
+
 QString MainPage::name() const { return constants::kMainPageCaption; }
 QString MainPage::caption() const { return constants::kMainPageCaption; }
 bool MainPage::captionVisible() const { return true; }
@@ -93,6 +95,10 @@ QtNodes::NodeDataModel::ConnectionPolicy MainPage::portInConnectionPolicy(
     QtNodes::PortIndex port_index) const {
   Q_UNUSED(port_index)
   return QtNodes::NodeDataModel::ConnectionPolicy::Many;
+}
+
+void MainPage::configure() {
+  this->BaseNodeDataModel::setFilePath(constants::kDefaultMainPathFileName);
 }
 }  // namespace data_models
 }  // namespace node_editor
