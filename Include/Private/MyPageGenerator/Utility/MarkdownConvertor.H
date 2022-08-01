@@ -24,6 +24,7 @@
 namespace gccore {
 namespace my_page_generator {
 namespace utilities {
+namespace core {
 class MarkdownConvertor {
  public:
   enum ExportKinds { EK_Html };
@@ -36,6 +37,7 @@ class MarkdownConvertor {
  private:
   QString markdown_;
 };
+}  // namespace core
 }  // namespace utilities
 }  // namespace my_page_generator
 }  // namespace gccore

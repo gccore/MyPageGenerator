@@ -19,6 +19,7 @@
 #include <MyPageGenerator/NodeEditor/DataModel/BaseNodeEmbeddedWidget.H>
 
 #include <MyPageGenerator/NodeEditor/DataModel/NodeDescriptionWidget.H>
+#include <MyPageGenerator/Utility/CommonWidgetUtilities.H>
 #include <MyPageGenerator/Utility/CommonCoreUtilities.H>
 #include <MyPageGenerator/Widget/MDEditor.H>
 
@@ -67,10 +68,7 @@ void BaseNodeEmbeddedWidget::generateLayout() {
   setLayout(layout);
 }
 void BaseNodeEmbeddedWidget::generateStyleSheet() {
-  this->QWidget::setObjectName(utilities::GenerateUniqueObjectName());
-  this->QWidget::setStyleSheet(
-      QString("QWidget#%1 { background-color: transparent; }")
-          .arg(this->QWidget::objectName()));
+  utilities::widgets::SetTransparentStyleSheet(this);
 }
 void BaseNodeEmbeddedWidget::generateNodeDescriptionSection() {
   node_description_ = new NodeDescription;

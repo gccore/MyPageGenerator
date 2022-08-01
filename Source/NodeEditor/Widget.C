@@ -59,7 +59,8 @@ void Widget::exportToHtml(QString const& path) {
         QString const file_content =
             data_model->property(constants::properties::kHtml).toString();
 
-        utilities::File(utilities::JoinPath(directory_path, file_path))
+        utilities::core::File(
+            utilities::core::JoinPath(directory_path, file_path))
             .write(file_content);
       });
 }
@@ -88,7 +89,7 @@ void Widget::deserialize(QDataStream& data_stream,
   flow_scene_->loadFromMemory(flow_data);
 
   QString const md_dir =
-      utilities::JoinPath(root_directory_path, constants::kMdDirectory);
+      utilities::core::JoinPath(root_directory_path, constants::kMdDirectory);
 
   std::unordered_map<QUuid, std::unique_ptr<QtNodes::Node>> const& nodes =
       flow_scene_->nodes();
@@ -108,8 +109,8 @@ void Widget::deserialize(QDataStream& data_stream,
     bool const file_path_property_result =
         data_model->setProperty(constants::properties::kPath, file_path);
 
-    QString const md_file_path = utilities::JoinPath(md_dir, file_path);
-    QString const file_content = utilities::File(md_file_path).readAll();
+    QString const md_file_path = utilities::core::JoinPath(md_dir, file_path);
+    QString const file_content = utilities::core::File(md_file_path).readAll();
 
     bool const file_content_property_result =
         data_model->setProperty(constants::properties::kRawMd, file_content);
@@ -122,7 +123,7 @@ void Widget::saveNodesContentToFile(QString const& root_directory_path) const {
   assert(flow_scene_ != nullptr);
 
   QString const directory_path =
-      utilities::JoinPath(root_directory_path, constants::kMdDirectory);
+      utilities::core::JoinPath(root_directory_path, constants::kMdDirectory);
 
   const_cast<Widget*>(this)->flow_scene_->iterateOverNodeData(
       [&](QtNodes::NodeDataModel const* const data_model) {
@@ -131,8 +132,8 @@ void Widget::saveNodesContentToFile(QString const& root_directory_path) const {
 
         if (!file_name.isEmpty()) {
           QString const file_path =
-              utilities::JoinPath(directory_path, file_name);
-          utilities::File(file_path).write(
+              utilities::core::JoinPath(directory_path, file_name);
+          utilities::core::File(file_path).write(
               data_model->property(constants::properties::kRawMd).toString());
         }
       });

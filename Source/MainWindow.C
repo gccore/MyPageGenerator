@@ -75,20 +75,20 @@ void MainWindow::generateFileMenu() {
   this->QMainWindow::menuBar()->addMenu(file_menu);
 }
 
-utilities::Optional<QString> MainWindow::GetExistingDirectoryPath(
+utilities::core::Optional<QString> MainWindow::GetExistingDirectoryPath(
     QWidget* const parent) {
   QString const directory = QFileDialog::getExistingDirectory(
       parent, "Project Directory", qApp->applicationDirPath());
-  return directory.isEmpty() ? utilities::kNullOptional
-                             : utilities::Optional<QString>(directory);
+  return directory.isEmpty() ? utilities::core::kNullOptional
+                             : utilities::core::Optional<QString>(directory);
 }
-utilities::Optional<QString> MainWindow::GetExistingProjectFile(
+utilities::core::Optional<QString> MainWindow::GetExistingProjectFile(
     QWidget* const parent) {
   QString const file = QFileDialog::getOpenFileName(
       parent, "Project File", qApp->applicationDirPath(),
       "Project File (*.MyPageGenerator.GCCORE)");
-  return file.isEmpty() ? utilities::kNullOptional
-                        : utilities::Optional<QString>(file);
+  return file.isEmpty() ? utilities::core::kNullOptional
+                        : utilities::core::Optional<QString>(file);
 }
 
 structures::ProjectDescription MainWindow::createProjectWindow(
@@ -115,16 +115,16 @@ void MainWindow::onNewProjectClicked() {
   assert(centeral_widget_ != nullptr);
   assert(sender() != nullptr);
 
-  if (utilities::Optional<QString> const directory_path =
-          GetExistingDirectoryPath()) {
+  if (utilities::core::Optional<QString> const directory_path =
+          GetExistingDirectoryPath())
     addProjectWindow(directory_path.value());
-  }
 }
 void MainWindow::onOpenProjectClicked() {
   assert(centeral_widget_ != nullptr);
   assert(sender() != nullptr);
 
-  if (utilities::Optional<QString> const file_path = GetExistingProjectFile()) {
+  if (utilities::core::Optional<QString> const file_path =
+          GetExistingProjectFile()) {
     structures::ProjectDescription project =
         addProjectWindow(QFileInfo(file_path.value()).dir().path());
 
@@ -141,8 +141,8 @@ void MainWindow::onProjectSaveMeClicked(QUuid const& uuid) {
   structures::ProjectDescription const& project_data = projects_map_[uuid];
 
   QFile config_file;
-  config_file.setFileName(utilities::JoinPath(project_data.root_directory,
-                                              constants::kSaveFileName));
+  config_file.setFileName(utilities::core::JoinPath(project_data.root_directory,
+                                                    constants::kSaveFileName));
   config_file.open(QIODevice::WriteOnly);
 
   QDataStream config_stream(&config_file);

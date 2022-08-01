@@ -78,7 +78,7 @@ void ProjectSubWindow::generateLayout() {
   this->QWidget::setLayout(layout);
 
   status_button_layout_ = new QHBoxLayout;
-  layout->addWidget(widgets::utilities::CreateHorizontalFrame());
+  layout->addWidget(utilities::widgets::CreateHorizontalFrame());
   layout->addLayout(status_button_layout_);
 }
 void ProjectSubWindow::generateNodeEditor() {
@@ -104,7 +104,7 @@ void ProjectSubWindow::generateSaveMeButton() {
 void ProjectSubWindow::generateStatusButtonsSpacerItem() {
   assert(status_button_layout_ != nullptr);
   status_button_layout_->addSpacerItem(
-      widgets::utilities::CreateHorizontalSpacer());
+      utilities::widgets::CreateHorizontalSpacer());
 }
 
 void ProjectSubWindow::onGenerateButtonClicked() {

@@ -55,7 +55,7 @@ QString BaseNodeDataModel::rawMd() const {
 }
 
 QString BaseNodeDataModel::exportToHtml() const {
-  return utilities::MarkdownConvertor(baseEmbeddedWidget()->content())
+  return utilities::core::MarkdownConvertor(baseEmbeddedWidget()->content())
       .exportToHtml();
 }
 
@@ -89,8 +89,8 @@ void BaseNodeDataModel::generateBaseEmbeddedWidget() {
 void BaseNodeDataModel::generateStyleSheet() {
   assert(embedded_widget_ != nullptr);
   assert(base_embedded_widget_ != nullptr);
-  widgets::utilities::SetTransparentStyleSheet(embedded_widget_);
-  widgets::utilities::SetTransparentStyleSheet(base_embedded_widget_);
+  utilities::widgets::SetTransparentStyleSheet(embedded_widget_);
+  utilities::widgets::SetTransparentStyleSheet(base_embedded_widget_);
 }
 }  // namespace data_models
 }  // namespace node_editor

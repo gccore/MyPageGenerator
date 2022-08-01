@@ -47,9 +47,9 @@ class MainWindow : public QMainWindow {
   void generateMenuBar();
   void generateFileMenu();
 
-  static utilities::Optional<QString> GetExistingDirectoryPath(
+  static utilities::core::Optional<QString> GetExistingDirectoryPath(
       QWidget* const parent = nullptr);
-  static utilities::Optional<QString> GetExistingProjectFile(
+  static utilities::core::Optional<QString> GetExistingProjectFile(
       QWidget* const parent = nullptr);
 
   structures::ProjectDescription createProjectWindow(

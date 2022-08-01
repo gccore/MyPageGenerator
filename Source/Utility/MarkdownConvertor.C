@@ -25,6 +25,7 @@
 namespace gccore {
 namespace my_page_generator {
 namespace utilities {
+namespace core {
 MarkdownConvertor::MarkdownConvertor(QString const& markdown)
     : markdown_(markdown) {}
 
@@ -56,6 +57,7 @@ QString MarkdownConvertor::exportToHtml() const {
   assert(return_code != kMdHtmlFailCode);
   return QString::fromStdString(result);
 }
+}  // namespace core
 }  // namespace utilities
 }  // namespace my_page_generator
 }  // namespace gccore

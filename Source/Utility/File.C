@@ -25,6 +25,7 @@
 namespace gccore {
 namespace my_page_generator {
 namespace utilities {
+namespace core {
 File::File(QString const& file) : file_name_(file) {}
 
 void File::setFileName(QString const& file) { file_name_ = file; }
@@ -58,6 +59,7 @@ void File::createPath() {
     assert(creating_parent_dir_result);
   }
 }
+}  // namespace core
 }  // namespace utilities
 }  // namespace my_page_generator
 }  // namespace gccore

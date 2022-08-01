@@ -24,9 +24,11 @@
 namespace gccore {
 namespace my_page_generator {
 namespace utilities {
+namespace core {
 template <typename Type>
 using Optional = tl::optional<Type>;
 static tl::nullopt_t constexpr kNullOptional = tl::nullopt;
+}  // namespace core
 }  // namespace utilities
 }  // namespace my_page_generator
 }  // namespace gccore

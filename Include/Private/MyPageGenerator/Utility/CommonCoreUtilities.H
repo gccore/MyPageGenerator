@@ -26,6 +26,7 @@
 namespace gccore {
 namespace my_page_generator {
 namespace utilities {
+namespace core {
 inline QString JoinPath(QString const& left, QString const& right) {
   return left + QDir::separator() + right;
 }
@@ -33,6 +34,7 @@ inline QString GenerateUniqueObjectName() {
   QString name = QUuid::createUuid().toString();
   return "GCCORE" + name.remove('{').remove('}').remove('-');
 }
+}  // namespace core
 }  // namespace utilities
 }  // namespace my_page_generator
 }  // namespace gccore

@@ -29,8 +29,8 @@
 
 namespace gccore {
 namespace my_page_generator {
-namespace widgets {
 namespace utilities {
+namespace widgets {
 inline QSpacerItem* CreateHorizontalSpacer() {
   return new QSpacerItem(-1, 1, QSizePolicy::Expanding);
 }
@@ -54,16 +54,14 @@ inline QPointer<QFrame> CreateVerticalFrame() {
 inline void SetTransparentStyleSheet(QWidget* const widget) {
   assert(widget != nullptr);
 
-  if (widget->objectName().isEmpty()) {
-    using gccore::my_page_generator::utilities::GenerateUniqueObjectName;
-    widget->setObjectName(GenerateUniqueObjectName());
-  }
+  if (widget->objectName().isEmpty())
+    widget->setObjectName(utilities::core::GenerateUniqueObjectName());
 
   widget->setStyleSheet(QString("QWidget#%1 { background-color: transparent; }")
                             .arg(widget->objectName()));
 }
-}  // namespace utilities
 }  // namespace widgets
+}  // namespace utilities
 }  // namespace my_page_generator
 }  // namespace gccore
 

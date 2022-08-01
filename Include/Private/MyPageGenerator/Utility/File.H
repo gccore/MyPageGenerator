@@ -25,6 +25,7 @@
 namespace gccore {
 namespace my_page_generator {
 namespace utilities {
+namespace core {
 class File {
  public:
   explicit File(QString const& file);
@@ -44,6 +45,7 @@ class File {
   QString file_name_;
   QFile file_;
 };
+}  // namespace core
 }  // namespace utilities
 }  // namespace my_page_generator
 }  // namespace gccore
