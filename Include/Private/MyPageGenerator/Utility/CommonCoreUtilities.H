@@ -20,6 +20,7 @@
 #define MYPAGEGENERATOR_UTILITIES_COMMONCOREUTILITIES_H
 
 #include <QtCore/QString>
+#include <QtCore/QUuid>
 #include <QtCore/QDir>
 
 namespace gccore {
@@ -27,6 +28,10 @@ namespace my_page_generator {
 namespace utilities {
 inline QString JoinPath(QString const& left, QString const& right) {
   return left + QDir::separator() + right;
+}
+inline QString GenerateUniqueObjectName() {
+  QString name = QUuid::createUuid().toString();
+  return "GCCORE" + name.remove('{').remove('}').remove('-');
 }
 }  // namespace utilities
 }  // namespace my_page_generator

@@ -19,6 +19,8 @@
 #ifndef MYPAGEGENERATOR_UTILITY_COMMONWIDGETUTILITIES_H
 #define MYPAGEGENERATOR_UTILITY_COMMONWIDGETUTILITIES_H
 
+#include <MyPageGenerator/Utility/CommonCoreUtilities.H>
+
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QFrame>
 #include <QtCore/QPointer>
@@ -47,6 +49,18 @@ inline QPointer<QFrame> CreateVerticalFrame() {
   line_frame->setFrameShape(QFrame::VLine);
   line_frame->setFrameShadow(QFrame::Sunken);
   return line_frame;
+}
+
+inline void SetTransparentStyleSheet(QWidget* const widget) {
+  assert(widget != nullptr);
+
+  if (widget->objectName().isEmpty()) {
+    using gccore::my_page_generator::utilities::GenerateUniqueObjectName;
+    widget->setObjectName(GenerateUniqueObjectName());
+  }
+
+  widget->setStyleSheet(QString("QWidget#%1 { background-color: transparent; }")
+                            .arg(widget->objectName()));
 }
 }  // namespace utilities
 }  // namespace widgets

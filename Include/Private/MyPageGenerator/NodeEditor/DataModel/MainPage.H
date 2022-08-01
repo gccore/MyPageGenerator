@@ -19,11 +19,7 @@
 #ifndef MYPAGEGENERATOR_PRIVATE_NODEEDITOR_DATAMODEL_MAINPAGE_H
 #define MYPAGEGENERATOR_PRIVATE_NODEEDITOR_DATAMODEL_MAINPAGE_H
 
-#include <nodes/NodeDataModel>
-
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QLayout>
+#include <MyPageGenerator/NodeEditor/DataModel/BaseNodeDataModel.H>
 
 #include <QtCore/QPointer>
 #include <QtCore/QString>
@@ -31,77 +27,12 @@
 
 namespace gccore {
 namespace my_page_generator {
-namespace widgets {
-class MDEditor;
-}  // namespace widgets
 namespace node_editor {
 namespace data_models {
-namespace embedded_widgets {
-class NodeDescription;
-}  // namespace embedded_widgets
-}  // namespace data_models
-}  // namespace node_editor
-}  // namespace my_page_generator
-}  // namespace gccore
-
-namespace gccore {
-namespace my_page_generator {
-namespace node_editor {
-namespace data_models {
-namespace embedded_widgets {
-class MainPageWidget : public QWidget {
+class MainPage : public BaseNodeDataModel {
   Q_OBJECT
 
  public:
-  using LayoutType = QVBoxLayout;
-
-  explicit MainPageWidget(QWidget* const parent = nullptr);
-
-  QPointer<NodeDescription> nodeDescription();
-  QPointer<widgets::MDEditor> mdEditor();
-
-  void setContent(QString const& new_content);
-  QString content() const;
-
- private:
-  QPointer<LayoutType> layout() const;
-
-  void generateView();
-  void generateLayout();
-  void generateStyleSheet();
-  void generateNodeDescriptionSection();
-  void generateButton();
-  void generateMDEditor();
-
-  Q_SLOT void onButtonClicked();
-
-  QPointer<QToolButton> button_;
-  QPointer<NodeDescription> node_description_;
-  QPointer<widgets::MDEditor> md_editor_;
-};
-}  // namespace embedded_widgets
-
-class MainPage : public QtNodes::NodeDataModel {
-  Q_OBJECT
-
-  Q_PROPERTY(QString FilePath READ filePath WRITE setFilePath)
-  Q_PROPERTY(QString Html READ exportToHtml CONSTANT)
-  Q_PROPERTY(QString RawMd READ rawMd WRITE setRawMd)
-
- public:
-  MainPage();
-  virtual ~MainPage();
-
-  void setFilePath(QString const& new_file_path);
-  QString filePath() const;
-
-  void setRawMd(QString const& new_raw_md);
-  QString rawMd() const;
-
-  QString exportToHtml() const;
-
-  QWidget* embeddedWidget() override;
-
   QString name() const override;
   QString caption() const override;
   bool captionVisible() const override;
@@ -123,12 +54,6 @@ class MainPage : public QtNodes::NodeDataModel {
   std::shared_ptr<QtNodes::NodeData> outData(QtNodes::PortIndex port) override;
   ConnectionPolicy portInConnectionPolicy(
       QtNodes::PortIndex port_index) const override;
-
- private:
-  void generateView();
-
-  QPointer<embedded_widgets::MainPageWidget> embedded_widget_;
-  QString file_path_;
 };
 }  // namespace data_models
 }  // namespace node_editor

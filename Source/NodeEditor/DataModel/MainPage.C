@@ -30,103 +30,6 @@ namespace gccore {
 namespace my_page_generator {
 namespace node_editor {
 namespace data_models {
-namespace embedded_widgets {
-MainPageWidget::MainPageWidget(QWidget* const parent) : QWidget(parent) {
-  generateView();
-}
-
-QPointer<NodeDescription> MainPageWidget::nodeDescription() {
-  assert(node_description_ != nullptr);
-  return node_description_;
-}
-QPointer<widgets::MDEditor> MainPageWidget::mdEditor() {
-  assert(md_editor_ != nullptr);
-  return md_editor_;
-}
-
-void MainPageWidget::setContent(QString const& new_content) {
-  assert(md_editor_ != nullptr);
-  md_editor_->setText(new_content);
-}
-QString MainPageWidget::content() const {
-  assert(md_editor_ != nullptr);
-  return md_editor_->text();
-}
-
-QPointer<MainPageWidget::LayoutType> MainPageWidget::layout() const {
-  assert(QWidget::layout() != nullptr);
-  return qobject_cast<LayoutType*>(QWidget::layout());
-}
-
-void MainPageWidget::generateView() {
-  generateLayout();
-  generateStyleSheet();
-  generateNodeDescriptionSection();
-  generateButton();
-  generateMDEditor();
-}
-void MainPageWidget::generateLayout() {
-  LayoutType* const layout = new LayoutType;
-  setLayout(layout);
-}
-void MainPageWidget::generateStyleSheet() {
-  this->QWidget::setObjectName("MainPageWidget_generateStyleSheet");
-  setStyleSheet(
-      "QWidget#MainPageWidget_generateStyleSheet { "
-      "background-color: transparent; }");
-}
-void MainPageWidget::generateNodeDescriptionSection() {
-  node_description_ = new NodeDescription;
-  layout()->addWidget(node_description_);
-}
-void MainPageWidget::generateButton() {
-  button_ = new QToolButton;
-  button_->setText("Edit Page Content");
-  connect(button_, &QToolButton::clicked, this,
-          &MainPageWidget::onButtonClicked);
-  layout()->addWidget(button_);
-}
-void MainPageWidget::generateMDEditor() { md_editor_ = new widgets::MDEditor; }
-
-void MainPageWidget::onButtonClicked() { md_editor_->show(); }
-}  // namespace embedded_widgets
-
-MainPage::MainPage() { generateView(); }
-
-MainPage::~MainPage() {
-  if (embedded_widget_ != nullptr) {
-    embedded_widget_->deleteLater();
-  }
-}
-
-void MainPage::setFilePath(QString const& new_file_path) {
-  assert(embedded_widget_ != nullptr);
-  embedded_widget_->nodeDescription()->setFileName(new_file_path);
-}
-QString MainPage::filePath() const {
-  assert(embedded_widget_ != nullptr);
-  return embedded_widget_->nodeDescription()->fileName();
-}
-
-void MainPage::setRawMd(QString const& new_raw_md) {
-  assert(embedded_widget_ != nullptr);
-  embedded_widget_->mdEditor()->setText(new_raw_md);
-}
-QString MainPage::rawMd() const {
-  assert(embedded_widget_ != nullptr);
-  return embedded_widget_->mdEditor()->text();
-}
-
-QString MainPage::exportToHtml() const {
-  return utilities::MarkdownConvertor(embedded_widget_->content())
-      .exportTo(utilities::MarkdownConvertor::EK_Html);
-}
-
-QWidget* MainPage::embeddedWidget() {
-  assert(embedded_widget_ != nullptr);
-  return embedded_widget_;
-}
-
 QString MainPage::name() const { return constants::kMainPageCaption; }
 QString MainPage::caption() const { return constants::kMainPageCaption; }
 bool MainPage::captionVisible() const { return true; }
@@ -190,10 +93,6 @@ QtNodes::NodeDataModel::ConnectionPolicy MainPage::portInConnectionPolicy(
     QtNodes::PortIndex port_index) const {
   Q_UNUSED(port_index)
   return QtNodes::NodeDataModel::ConnectionPolicy::Many;
-}
-
-void MainPage::generateView() {
-  embedded_widget_ = new embedded_widgets::MainPageWidget;
 }
 }  // namespace data_models
 }  // namespace node_editor
