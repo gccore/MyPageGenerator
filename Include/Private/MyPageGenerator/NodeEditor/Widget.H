@@ -59,6 +59,7 @@ class Widget : public QWidget {
   void generateNodeEditorStyle();
 
   Q_SLOT void nodeCreated(QtNodes::Node& new_node);
+  Q_SLOT void connectionCreated(QtNodes::Connection const& connection);
 
   QPointer<QtNodes::FlowScene> flow_scene_;
   QPointer<QtNodes::FlowView> flow_view_;

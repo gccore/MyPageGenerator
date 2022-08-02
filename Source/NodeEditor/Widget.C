@@ -19,6 +19,7 @@
 #include <MyPageGenerator/NodeEditor/Widget.H>
 
 #include <MyPageGenerator/NodeEditor/DataModel/MainPage.H>
+#include <MyPageGenerator/NodeEditor/DataModel/SubPage.H>
 #include <MyPageGenerator/Utility/CommonCoreUtilities.H>
 #include <MyPageGenerator/Utility/File.H>
 #include <MyPageGenerator/Constants.H>
@@ -164,6 +165,8 @@ void Widget::generateNodeEditor() {
 
   connect(flow_scene_, &QtNodes::FlowScene::nodeCreated, this,
           &Widget::nodeCreated);
+  connect(flow_scene_, &QtNodes::FlowScene::connectionCreated, this,
+          &Widget::connectionCreated);
 
   layout()->addWidget(flow_view_);
 }
@@ -172,7 +175,9 @@ void Widget::generateNodeDataModel() {
 
   std::shared_ptr<QtNodes::DataModelRegistry> registery(
       new QtNodes::DataModelRegistry);
+
   registery->registerModel<data_models::MainPage>();
+  registery->registerModel<data_models::SubPage>();
 
   flow_scene_->setRegistry(registery);
 }
@@ -229,7 +234,9 @@ void Widget::generateNodeEditorStyle() {
 }
 
 void Widget::nodeCreated(QtNodes::Node& new_node) {
-  assert(nullptr != new_node.nodeDataModel());
+  assert(new_node.nodeDataModel() != nullptr);
+  assert(flow_scene_ != nullptr);
+  assert(sender() != nullptr);
 
   QtNodes::NodeDataModel* const data_model = new_node.nodeDataModel();
   if (data_models::MainPage* const main_page =
@@ -247,6 +254,15 @@ void Widget::nodeCreated(QtNodes::Node& new_node) {
       QMessageBox::critical(this, "Error", "Only one Main Page is required");
     }
   }
+}
+void Widget::connectionCreated(QtNodes::Connection const& connection) {
+  QtNodes::Node* const out_node = connection.getNode(QtNodes::PortType::Out);
+  QtNodes::PortIndex const out_index =
+      connection.getPortIndex(QtNodes::PortType::Out);
+
+  if (qobject_cast<data_models::SubPage*>(out_node->nodeDataModel()) != nullptr)
+    if (out_index != constants::kMainPageOutputPortIndex)
+      flow_scene_->deleteConnection(connection);
 }
 }  // namespace node_editor
 }  // namespace my_page_generator
