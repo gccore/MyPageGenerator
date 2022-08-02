@@ -23,6 +23,9 @@
 #include <MyPageGenerator/Utility/File.H>
 #include <MyPageGenerator/Constants.H>
 
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMessageBox>
+
 #include <QtCore/QUuid>
 #include <QtCore/QMap>
 
@@ -231,6 +234,18 @@ void Widget::nodeCreated(QtNodes::Node& new_node) {
   QtNodes::NodeDataModel* const data_model = new_node.nodeDataModel();
   if (data_models::MainPage* const main_page =
           qobject_cast<data_models::MainPage*>(data_model)) {
+    std::uint32_t counter = 0;
+    flow_scene_->iterateOverNodeData(
+        [&counter](QtNodes::NodeDataModel const* const node_data_model) {
+          counter += qobject_cast<data_models::MainPage const*>(node_data_model)
+                         ? 1
+                         : 0;
+        });
+
+    if (counter > 1) {
+      new_node.deleteLater();
+      QMessageBox::critical(this, "Error", "Only one Main Page is required");
+    }
   }
 }
 }  // namespace node_editor
