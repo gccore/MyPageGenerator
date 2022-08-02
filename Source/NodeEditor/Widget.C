@@ -21,6 +21,7 @@
 #include <MyPageGenerator/NodeEditor/DataModel/MainPage.H>
 #include <MyPageGenerator/NodeEditor/DataModel/SubPage.H>
 #include <MyPageGenerator/Utility/CommonCoreUtilities.H>
+#include <MyPageGenerator/Utility/MarkdownConvertor.H>
 #include <MyPageGenerator/Utility/File.H>
 #include <MyPageGenerator/Constants.H>
 
@@ -54,19 +55,45 @@ void Widget::exportTo(ExportKinds const mode, QString const& path) {
 void Widget::exportToHtml(QString const& path) {
   assert(flow_scene_ != nullptr);
 
-  flow_scene_->iterateOverNodeData(
-      [directory_path = path](QtNodes::NodeDataModel* const data_model) {
-        assert(data_model != nullptr);
+  std::unordered_map<QUuid, std::unique_ptr<QtNodes::Node>> const& nodes =
+      flow_scene_->nodes();
 
-        QString const file_path =
-            data_model->property(constants::properties::kPath).toString();
-        QString const file_content =
-            data_model->property(constants::properties::kHtml).toString();
+  data_models::MainPage* main_page = nullptr;
+  for (std::pair<QUuid const, std::unique_ptr<QtNodes::Node>> const& node :
+       nodes) {
+    if ((main_page = qobject_cast<data_models::MainPage*>(
+             node.second->nodeDataModel()))) {
+      break;
+    }
+  }
 
-        utilities::core::File(
-            utilities::core::JoinPath(directory_path, file_path))
-            .write(file_content);
-      });
+  if (main_page == nullptr) {
+    QMessageBox::critical(this, "Error", "You don't have a Main Page");
+  } else {
+    QString md_content = main_page->rawMd();
+    md_content += "\n\n---\n\n";
+    md_content += "### Table Of Contents:\n\n";
+    for (std::pair<QUuid const, std::unique_ptr<QtNodes::Node>> const& node :
+         nodes) {
+      if (data_models::SubPage* const sub_page =
+              qobject_cast<data_models::SubPage*>(
+                  node.second->nodeDataModel())) {
+        if (!sub_page->filePath().isEmpty()) {
+          md_content += QString("- [%1](%1)").arg(sub_page->filePath()) + "\n";
+          utilities::core::File(
+              utilities::core::JoinPath(path, sub_page->filePath()))
+              .write(sub_page->exportToHtml());
+        } else {
+          QMessageBox::critical(this, "Error",
+                                "One of the sub pages doesn't have file name");
+        }
+      }
+    }
+    md_content += "\n---\n";
+    utilities::core::File(
+        utilities::core::JoinPath(path, main_page->filePath()))
+        .write(utilities::core::MarkdownConvertor(md_content).exportToHtml());
+  }
 }
 
 void Widget::serialize(QDataStream& data_stream) const {
