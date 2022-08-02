@@ -190,7 +190,7 @@ void Widget::generateNodeEditor() {
   flow_scene_ = new QtNodes::FlowScene;
   flow_view_ = new QtNodes::FlowView(flow_scene_);
 
-  connect(flow_scene_, &QtNodes::FlowScene::nodeCreated, this,
+  connect(flow_scene_, &QtNodes::FlowScene::nodePlaced, this,
           &Widget::nodeCreated);
   connect(flow_scene_, &QtNodes::FlowScene::connectionCreated, this,
           &Widget::connectionCreated);
@@ -277,7 +277,7 @@ void Widget::nodeCreated(QtNodes::Node& new_node) {
         });
 
     if (counter > 1) {
-      new_node.deleteLater();
+      flow_scene_->removeNode(new_node);
       QMessageBox::critical(this, "Error", "Only one Main Page is required");
     }
   }
