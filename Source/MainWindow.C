@@ -106,7 +106,7 @@ structures::ProjectDescription MainWindow::addProjectWindow(
     QString const& directory_path) {
   structures::ProjectDescription project_description =
       createProjectWindow(directory_path);
-  centeral_widget_->addSubWindow(project_description.window)->show();
+  centeral_widget_->addSubWindow(project_description.window)->showMinimized();
   projects_map_[project_description.window->projectId()] = project_description;
   return project_description;
 }
