@@ -31,6 +31,8 @@ auto constexpr kSaveFileName = "Settings.MyPageGenerator.GCCORE";
 auto constexpr kMdDirectory = "MD";
 auto constexpr kDefaultMainPathFileName = "index.html";
 auto constexpr kMainPageOutputPortIndex = 1;
+auto constexpr kHtmlSuffix = ".html";
+auto constexpr kMarkdownSuffix = ".md";
 
 namespace properties {
 auto constexpr kPath = "FilePath";

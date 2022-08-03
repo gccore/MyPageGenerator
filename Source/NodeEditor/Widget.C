@@ -17,28 +17,28 @@
  */
 
 #include <MyPageGenerator/NodeEditor/Widget.H>
-
+//
+#include <MyPageGenerator/Constants.H>
 #include <MyPageGenerator/NodeEditor/DataModel/MainPage.H>
 #include <MyPageGenerator/NodeEditor/DataModel/SubPage.H>
 #include <MyPageGenerator/Utility/CommonCoreUtilities.H>
-#include <MyPageGenerator/Utility/MarkdownConvertor.H>
 #include <MyPageGenerator/Utility/File.H>
-#include <MyPageGenerator/Constants.H>
-
+#include <MyPageGenerator/Utility/MarkdownConvertor.H>
+//
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
-
-#include <QtCore/QUuid>
+//
 #include <QtCore/QMap>
-
-#include <nodes/DataModelRegistry>
+#include <QtCore/QUuid>
+//
 #include <nodes/ConnectionStyle>
+#include <nodes/DataModelRegistry>
 #include <nodes/FlowViewStyle>
-#include <nodes/NodeStyle>
 #include <nodes/Node>
-
-#include <unordered_map>
+#include <nodes/NodeStyle>
+//
 #include <memory>
+#include <unordered_map>
 
 namespace gccore {
 namespace my_page_generator {
@@ -58,19 +58,9 @@ void Widget::exportToHtml(QString const& path) {
   std::unordered_map<QUuid, std::unique_ptr<QtNodes::Node>> const& nodes =
       flow_scene_->nodes();
 
-  data_models::MainPage* main_page = nullptr;
-  for (std::pair<QUuid const, std::unique_ptr<QtNodes::Node>> const& node :
-       nodes) {
-    if ((main_page = qobject_cast<data_models::MainPage*>(
-             node.second->nodeDataModel()))) {
-      break;
-    }
-  }
-
-  if (main_page == nullptr) {
-    QMessageBox::critical(this, "Error", "You don't have a Main Page");
-  } else {
-    QString md_content = main_page->rawMd();
+  if (utilities::core::Optional<data_models::MainPage*> const main_page =
+          FindMainPage(nodes)) {
+    QString md_content = main_page.value()->rawMd();
     md_content += "\n\n---\n\n";
     md_content += "### Table Of Contents:\n\n";
     for (std::pair<QUuid const, std::unique_ptr<QtNodes::Node>> const& node :
@@ -79,9 +69,14 @@ void Widget::exportToHtml(QString const& path) {
               qobject_cast<data_models::SubPage*>(
                   node.second->nodeDataModel())) {
         if (!sub_page->filePath().isEmpty()) {
-          md_content += QString("- [%1](%1)").arg(sub_page->filePath()) + "\n";
+          md_content +=
+              QString("- [%1](%2)")
+                  .arg(sub_page->filePath())
+                  .arg(sub_page->filePath() + constants::kHtmlSuffix) +
+              "\n";
           utilities::core::File(
-              utilities::core::JoinPath(path, sub_page->filePath()))
+              utilities::core::JoinPath(
+                  path, sub_page->filePath() + constants::kHtmlSuffix))
               .write(sub_page->exportToHtml());
         } else {
           QMessageBox::critical(this, "Error",
@@ -89,10 +84,13 @@ void Widget::exportToHtml(QString const& path) {
         }
       }
     }
-    md_content += "\n---\n";
+    md_content += "  \n\n---\n";
     utilities::core::File(
-        utilities::core::JoinPath(path, main_page->filePath()))
+        utilities::core::JoinPath(
+            path, main_page.value()->filePath() + constants::kHtmlSuffix))
         .write(utilities::core::MarkdownConvertor(md_content).exportToHtml());
+  } else {
+    QMessageBox::critical(this, "Error", "You don't have a Main Page");
   }
 }
 
@@ -162,8 +160,8 @@ void Widget::saveNodesContentToFile(QString const& root_directory_path) const {
             data_model->property(constants::properties::kPath).toString();
 
         if (!file_name.isEmpty()) {
-          QString const file_path =
-              utilities::core::JoinPath(directory_path, file_name);
+          QString const file_path = utilities::core::JoinPath(
+              directory_path, file_name + constants::kMarkdownSuffix);
           utilities::core::File(file_path).write(
               data_model->property(constants::properties::kRawMd).toString());
         }
@@ -258,6 +256,23 @@ void Widget::generateNodeEditorStyle() {
           }
         }
         )");
+}
+
+utilities::core::Optional<data_models::MainPage*> Widget::FindMainPage(
+    std::unordered_map<QUuid, std::unique_ptr<QtNodes::Node>> const& nodes) {
+  utilities::core::Optional<data_models::MainPage*> result =
+      utilities::core::kNullOptional;
+
+  for (std::pair<QUuid const, std::unique_ptr<QtNodes::Node>> const& node :
+       nodes) {
+    if (data_models::MainPage* main_page = qobject_cast<data_models::MainPage*>(
+            node.second->nodeDataModel())) {
+      result = main_page;
+      break;
+    }
+  }
+
+  return result;
 }
 
 void Widget::nodeCreated(QtNodes::Node& new_node) {

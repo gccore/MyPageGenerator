@@ -19,16 +19,32 @@
 #ifndef MYPAGEGENERATOR_PRIVATE_NODEEDITORWIDGET_H
 #define MYPAGEGENERATOR_PRIVATE_NODEEDITORWIDGET_H
 
+#include <MyPageGenerator/Utility/Optional.H>
+//
 #include <nodes/FlowScene>
 #include <nodes/FlowView>
 #include <nodes/Node>
-
+//
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QWidget>
-
+//
 #include <QtCore/QDataStream>
-#include <QtCore/QPointer>
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
+#include <QtCore/QUuid>
+//
+#include <map>
+#include <memory>
+
+namespace gccore {
+namespace my_page_generator {
+namespace node_editor {
+namespace data_models {
+class MainPage;
+}  // namespace data_models
+}  // namespace node_editor
+}  // namespace my_page_generator
+}  // namespace gccore
 
 namespace gccore {
 namespace my_page_generator {
@@ -57,6 +73,9 @@ class Widget : public QWidget {
   void generateNodeEditor();
   void generateNodeDataModel();
   void generateNodeEditorStyle();
+
+  static utilities::core::Optional<data_models::MainPage*> FindMainPage(
+      std::unordered_map<QUuid, std::unique_ptr<QtNodes::Node>> const& nodes);
 
   Q_SLOT void nodeCreated(QtNodes::Node& new_node);
   Q_SLOT void connectionCreated(QtNodes::Connection const& connection);
