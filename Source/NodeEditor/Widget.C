@@ -138,7 +138,8 @@ void Widget::deserialize(QDataStream& data_stream,
     bool const file_path_property_result =
         data_model->setProperty(constants::properties::kPath, file_path);
 
-    QString const md_file_path = utilities::core::JoinPath(md_dir, file_path);
+    QString const md_file_path = utilities::core::JoinPath(md_dir, file_path) +
+                                 constants::kMarkdownSuffix;
     QString const file_content = utilities::core::File(md_file_path).readAll();
 
     bool const file_content_property_result =
