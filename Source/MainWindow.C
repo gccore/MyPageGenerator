@@ -27,6 +27,7 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMessageBox>
 
 #include <QtCore/QDataStream>
 
@@ -59,6 +60,14 @@ QPointer<QMenu> MainWindow::CreateFileRecentMenu() {
   menu->setTitle("Recent Projects:");
   menu->addAction(MainWindow::CreateEmptyAction());
   return menu;
+}
+QPointer<QAction>
+MainWindow::createRecentProjectAction(QString const& project_path) {
+  QPointer<QAction> action = new QAction;
+  action->setText(project_path);
+  connect(action, &QAction::triggered, this,
+          [this, project_path] { onRecentProjectClicked(project_path); });
+  return action;
 }
 
 void MainWindow::generateView() {
@@ -127,6 +136,46 @@ MainWindow::addProjectWindow(QString const& directory_path) {
   return project_description;
 }
 
+void MainWindow::ShrinkActionsToFit(std::int32_t const upper,
+                                    QPointer<QMenu> const& menu) {
+  assert(menu != nullptr);
+  for (std::int32_t counter = menu->actions().size(); counter >= upper;
+       counter = menu->actions().size()) {
+    menu->removeAction(menu->actions()[counter]);
+  }
+}
+void MainWindow::removeEmptyActionFrom(QPointer<QMenu> const& menu) const {
+  assert(menu != nullptr);
+
+  QList<QAction*> const actions = menu->actions();
+  if (actions.size() == 1 &&
+      actions.first()->text() == constants::kEmptyActionText) {
+    menu->removeAction(actions.first());
+  }
+}
+void MainWindow::addProjectToRecentMenu(QString const& project_path) {
+  assert(recent_projects_menu_ != nullptr);
+  MainWindow::ShrinkActionsToFit(constants::kMaximumRecentProjects,
+                                 recent_projects_menu_);
+  removeEmptyActionFrom(recent_projects_menu_);
+  recent_projects_menu_->addAction(createRecentProjectAction(project_path));
+}
+void MainWindow::openProject(QString const& project_path) {
+  if (QFileInfo(project_path).exists()) {
+    structures::ProjectDescription const project =
+        addProjectWindow(QFileInfo(project_path).dir().path());
+
+    QFile project_file(project_path);
+    project_file.open(QIODevice::ReadOnly);
+    assert(project_file.isOpen());
+    QDataStream file_deserializer(&project_file);
+    project.window->deserialize(file_deserializer);
+  } else {
+    QMessageBox::critical(this, "Error",
+                          "File: " + project_path + " deosn't exists");
+  }
+}
+
 void MainWindow::onNewProjectClicked() {
   assert(centeral_widget_ != nullptr);
   assert(sender() != nullptr);
@@ -141,14 +190,8 @@ void MainWindow::onOpenProjectClicked() {
 
   if (utilities::core::Optional<QString> const file_path =
           GetExistingProjectFile()) {
-    structures::ProjectDescription project =
-        addProjectWindow(QFileInfo(file_path.value()).dir().path());
-
-    QFile project_file(file_path.value());
-    project_file.open(QIODevice::ReadOnly);
-    assert(project_file.isOpen());
-    QDataStream file_deserializer(&project_file);
-    project.window->deserialize(file_deserializer);
+    addProjectToRecentMenu(file_path.value());
+    openProject(file_path.value());
   }
 }
 void MainWindow::onProjectSaveMeClicked(QUuid const& uuid) {
@@ -164,6 +207,10 @@ void MainWindow::onProjectSaveMeClicked(QUuid const& uuid) {
   QDataStream config_stream(&config_file);
   project_data.window->serialize(config_stream);
   project_data.window->saveMdFiles();
+}
+void MainWindow::onRecentProjectClicked(QString const& project) {
+  assert(!project.isEmpty());
+  openProject(project);
 }
 } // namespace my_page_generator
 } // namespace gccore

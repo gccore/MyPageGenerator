@@ -43,6 +43,7 @@ private:
   QPointer<QAction> createFileOpenAction() const;
   static QPointer<QAction> CreateEmptyAction();
   static QPointer<QMenu> CreateFileRecentMenu();
+  QPointer<QAction> createRecentProjectAction(QString const& project_path);
 
   void generateView();
   void generateCenteralWidget();
@@ -60,9 +61,16 @@ private:
   structures::ProjectDescription
   addProjectWindow(QString const& directory_path);
 
+  static void ShrinkActionsToFit(std::int32_t const upper,
+                                 QPointer<QMenu> const& menu);
+  void removeEmptyActionFrom(QPointer<QMenu> const& menu) const;
+  void addProjectToRecentMenu(QString const& project_path);
+  void openProject(QString const& project_path);
+
   Q_SLOT void onNewProjectClicked();
   Q_SLOT void onOpenProjectClicked();
   Q_SLOT void onProjectSaveMeClicked(QUuid const& project_id);
+  Q_SLOT void onRecentProjectClicked(QString const& project);
 
   QPointer<QMdiArea> centeral_widget_;
   structures::ProjectDescription::Map projects_map_;
