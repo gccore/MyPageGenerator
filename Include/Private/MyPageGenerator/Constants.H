@@ -33,14 +33,20 @@ auto constexpr kDefaultMainPathFileName = "index.html";
 auto constexpr kMainPageOutputPortIndex = 1;
 auto constexpr kHtmlSuffix = ".html";
 auto constexpr kMarkdownSuffix = ".md";
+auto constexpr kMaximumRecentProjects = 10;
+auto constexpr kEmptyActionText = "[ EMPTY ]";
+auto constexpr kSettingsFileName = "Settings.GCCORE.MyPageGenerator.ini";
 
+namespace settings {
+auto constexpr kRecentProjects = "RecentProjects/Names";
+} // namespace settings
 namespace properties {
 auto constexpr kPath = "FilePath";
 auto constexpr kHtml = "Html";
 auto constexpr kRawMd = "RawMd";
-}  // namespace properties
-}  // namespace constants
-}  // namespace my_page_generator
-}  // namespace gccore
+} // namespace properties
+} // namespace constants
+} // namespace my_page_generator
+} // namespace gccore
 
-#endif  // MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
+#endif // MYPAGEGENERATOR_PRIVATE_CONSTANTS_H
