@@ -18,15 +18,15 @@
 
 #include <MyPageGenerator/MainWindow.H>
 
-#include <MyPageGenerator/Utility/CommonCoreUtilities.H>
-#include <MyPageGenerator/ProjectSubWindow.H>
 #include <MyPageGenerator/Constants.H>
+#include <MyPageGenerator/ProjectSubWindow.H>
+#include <MyPageGenerator/Utility/CommonCoreUtilities.H>
 
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMenuBar>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
 
 #include <QtCore/QDataStream>
 
@@ -47,6 +47,18 @@ QPointer<QAction> MainWindow::createFileOpenAction() const {
   action->setText("&Open");
   connect(action, &QAction::triggered, this, &MainWindow::onOpenProjectClicked);
   return action;
+}
+QPointer<QAction> MainWindow::CreateEmptyAction() {
+  QPointer<QAction> action = new QAction;
+  action->setText("[ EMPTY ]");
+  action->setEnabled(false);
+  return action;
+}
+QPointer<QMenu> MainWindow::CreateFileRecentMenu() {
+  QPointer<QMenu> menu = new QMenu;
+  menu->setTitle("Recent Projects:");
+  menu->addAction(MainWindow::CreateEmptyAction());
+  return menu;
 }
 
 void MainWindow::generateView() {
@@ -72,18 +84,22 @@ void MainWindow::generateFileMenu() {
   file_menu->addAction(createFileNewAction());
   file_menu->addAction(createFileOpenAction());
 
+  recent_projects_menu_ = CreateFileRecentMenu();
+  file_menu->addSeparator();
+  file_menu->addMenu(recent_projects_menu_);
+
   this->QMainWindow::menuBar()->addMenu(file_menu);
 }
 
-utilities::core::Optional<QString> MainWindow::GetExistingDirectoryPath(
-    QWidget* const parent) {
+utilities::core::Optional<QString>
+MainWindow::GetExistingDirectoryPath(QWidget* const parent) {
   QString const directory = QFileDialog::getExistingDirectory(
       parent, "Project Directory", qApp->applicationDirPath());
   return directory.isEmpty() ? utilities::core::kNullOptional
                              : utilities::core::Optional<QString>(directory);
 }
-utilities::core::Optional<QString> MainWindow::GetExistingProjectFile(
-    QWidget* const parent) {
+utilities::core::Optional<QString>
+MainWindow::GetExistingProjectFile(QWidget* const parent) {
   QString const file = QFileDialog::getOpenFileName(
       parent, "Project File", qApp->applicationDirPath(),
       "Project File (*.MyPageGenerator.GCCORE)");
@@ -91,8 +107,8 @@ utilities::core::Optional<QString> MainWindow::GetExistingProjectFile(
                         : utilities::core::Optional<QString>(file);
 }
 
-structures::ProjectDescription MainWindow::createProjectWindow(
-    QString const& directory_path) {
+structures::ProjectDescription
+MainWindow::createProjectWindow(QString const& directory_path) {
   structures::ProjectDescription project_description;
   project_description.root_directory = directory_path;
   project_description.window = new ProjectSubWindow;
@@ -102,8 +118,8 @@ structures::ProjectDescription MainWindow::createProjectWindow(
                     project_description.window->projectId()));
   return project_description;
 }
-structures::ProjectDescription MainWindow::addProjectWindow(
-    QString const& directory_path) {
+structures::ProjectDescription
+MainWindow::addProjectWindow(QString const& directory_path) {
   structures::ProjectDescription project_description =
       createProjectWindow(directory_path);
   centeral_widget_->addSubWindow(project_description.window)->showMinimized();
@@ -149,5 +165,5 @@ void MainWindow::onProjectSaveMeClicked(QUuid const& uuid) {
   project_data.window->serialize(config_stream);
   project_data.window->saveMdFiles();
 }
-}  // namespace my_page_generator
-}  // namespace gccore
+} // namespace my_page_generator
+} // namespace gccore

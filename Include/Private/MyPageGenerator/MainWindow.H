@@ -22,24 +22,27 @@
 #include <MyPageGenerator/Structure/ProjectDescription.H>
 #include <MyPageGenerator/Utility/Optional.H>
 
+#include <QtWidgets/QAction>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMdiArea>
-#include <QtWidgets/QAction>
+#include <QtWidgets/QMenu>
 
-#include <QtCore/QPointer>
 #include <QtCore/QObject>
+#include <QtCore/QPointer>
 
 namespace gccore {
 namespace my_page_generator {
 class MainWindow : public QMainWindow {
   Q_OBJECT
 
- public:
+public:
   explicit MainWindow(QWidget* const parent = nullptr);
 
- private:
+private:
   QPointer<QAction> createFileNewAction() const;
   QPointer<QAction> createFileOpenAction() const;
+  static QPointer<QAction> CreateEmptyAction();
+  static QPointer<QMenu> CreateFileRecentMenu();
 
   void generateView();
   void generateCenteralWidget();
@@ -47,15 +50,15 @@ class MainWindow : public QMainWindow {
   void generateMenuBar();
   void generateFileMenu();
 
-  static utilities::core::Optional<QString> GetExistingDirectoryPath(
-      QWidget* const parent = nullptr);
-  static utilities::core::Optional<QString> GetExistingProjectFile(
-      QWidget* const parent = nullptr);
+  static utilities::core::Optional<QString>
+  GetExistingDirectoryPath(QWidget* const parent = nullptr);
+  static utilities::core::Optional<QString>
+  GetExistingProjectFile(QWidget* const parent = nullptr);
 
-  structures::ProjectDescription createProjectWindow(
-      QString const& directory_path);
-  structures::ProjectDescription addProjectWindow(
-      QString const& directory_path);
+  structures::ProjectDescription
+  createProjectWindow(QString const& directory_path);
+  structures::ProjectDescription
+  addProjectWindow(QString const& directory_path);
 
   Q_SLOT void onNewProjectClicked();
   Q_SLOT void onOpenProjectClicked();
@@ -63,8 +66,9 @@ class MainWindow : public QMainWindow {
 
   QPointer<QMdiArea> centeral_widget_;
   structures::ProjectDescription::Map projects_map_;
+  QPointer<QMenu> recent_projects_menu_;
 };
-}  // namespace my_page_generator
-}  // namespace gccore
+} // namespace my_page_generator
+} // namespace gccore
 
-#endif  // MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
+#endif // MYPAGEGENERATOR_PRIVATE_MYPAGEGENERATOR_MAINWINDOW_H
