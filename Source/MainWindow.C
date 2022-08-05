@@ -30,12 +30,15 @@
 #include <QtWidgets/QMessageBox>
 
 #include <QtCore/QDataStream>
+#include <QtCore/QStringList>
 
 namespace gccore {
 namespace my_page_generator {
 MainWindow::MainWindow(QWidget* const parent) : QMainWindow(parent) {
   generateView();
+  loadSettings();
 }
+MainWindow::~MainWindow() { saveSettings(); }
 
 QPointer<QAction> MainWindow::createFileNewAction() const {
   QPointer<QAction> action = new QAction;
@@ -98,6 +101,47 @@ void MainWindow::generateFileMenu() {
   file_menu->addMenu(recent_projects_menu_);
 
   this->QMainWindow::menuBar()->addMenu(file_menu);
+}
+
+QSharedPointer<QSettings> MainWindow::CreateQSettings() {
+  QSharedPointer<QSettings> settings;
+  settings.reset(
+      new QSettings(utilities::core::JoinPath(qApp->applicationDirPath(),
+                                              constants::kSettingsFileName),
+                    QSettings::Format::IniFormat));
+  return settings;
+}
+void MainWindow::saveSettings() const {
+  QSharedPointer<QSettings> settings = CreateQSettings();
+  saveSettingsRecentProjects(settings.get());
+}
+void MainWindow::saveSettingsRecentProjects(
+    QPointer<QSettings> const& settings) const {
+  assert(settings != nullptr);
+  assert(recent_projects_menu_ != nullptr);
+
+  QStringList list;
+  for (QAction const* const action : recent_projects_menu_->actions()) {
+    if (action->text() != constants::kEmptyActionText) {
+      list.push_back(action->text());
+    }
+  }
+  settings->setValue(constants::settings::kRecentProjects, list);
+}
+
+void MainWindow::loadSettings() {
+  QSharedPointer<QSettings> settings = CreateQSettings();
+  loadSettingsRecentProjects(settings.get());
+}
+void MainWindow::loadSettingsRecentProjects(
+    QPointer<QSettings> const& settings) {
+  assert(settings != nullptr);
+
+  QStringList const list =
+      settings->value(constants::settings::kRecentProjects).toStringList();
+  for (QString const& item : list) {
+    addProjectToRecentMenu(item);
+  }
 }
 
 utilities::core::Optional<QString>
