@@ -29,6 +29,8 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
+#include <QtCore/QSettings>
+#include <QtCore/QSharedPointer>
 
 namespace gccore {
 namespace my_page_generator {
@@ -37,6 +39,7 @@ class MainWindow : public QMainWindow {
 
 public:
   explicit MainWindow(QWidget* const parent = nullptr);
+  virtual ~MainWindow();
 
 private:
   QPointer<QAction> createFileNewAction() const;
@@ -50,6 +53,14 @@ private:
   void generateLayout();
   void generateMenuBar();
   void generateFileMenu();
+
+  static QSharedPointer<QSettings> CreateQSettings();
+
+  void saveSettings() const;
+  void saveSettingsRecentProjects(QPointer<QSettings> const& settings) const;
+
+  void loadSettings();
+  void loadSettingsRecentProjects(QPointer<QSettings> const& settings);
 
   static utilities::core::Optional<QString>
   GetExistingDirectoryPath(QWidget* const parent = nullptr);
